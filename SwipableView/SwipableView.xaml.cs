@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -243,24 +243,9 @@ namespace SmoDev.Swipable
         private void ApplyTranslation(double translatedX, double translationLimit, double translationOriginX)
         {
             double translationMax = GetTranslationMax(GetSwipeDirection(translatedX), translationLimit);
-            double translationToApply = GetTranslationToApply(translatedX, translationOriginX);
+            double translationToApply = translationOriginX + translatedX;
 
             CenterPanel.TranslationX = Math.Abs(translationToApply) >= Math.Abs(translationMax) ? translationMax : translationToApply;
-        }
-
-        /// <summary>
-        /// Obtient la quantité de translation à appliquer à la View
-        /// </summary>
-        /// <param name="translatedX">Quantité swipée par l'utilisateur</param>
-        /// <returns>Quantité de translation à appliquer à la View</returns>
-        /// <remarks>Cette méthode est nécessaire car Android se comporte différemment d'iOS et UWP</remarks>
-        private double GetTranslationToApply(double translatedX, double translationOriginX)
-        {
-            // Sous Android, on translate par rapport à la position courante de la View à translater
-            //if (Device.RuntimePlatform == Device.Android)
-            //    return CenterPanel.TranslationX + translatedX;
-
-            return translationOriginX + translatedX;
         }
 
         /// <summary>
