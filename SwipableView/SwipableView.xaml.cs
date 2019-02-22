@@ -82,7 +82,7 @@ namespace SmoDev.Swipable
         /// <summary>
         /// Maximum translation allowed (fraction of the view width)
         /// </summary>        
-        private const double _translationLimit = 2d / 3d;
+        private const double _maximumTranslationAllowed = 2d / 3d;
 
         /// <summary>
         /// Has user defined a left panel
@@ -147,11 +147,11 @@ namespace SmoDev.Swipable
             if (Math.Abs(CenterPanel.Width - Width) > DOUBLE_COMPARAISON_EPSILON)
                 CenterPanel.WidthRequest = Width;
 
-            if (Math.Abs(LeftPanel.Width - (Width * _translationLimit)) > DOUBLE_COMPARAISON_EPSILON)
-                LeftPanel.WidthRequest = Width * _translationLimit;
+            if (Math.Abs(LeftPanel.Width - (Width * _maximumTranslationAllowed)) > DOUBLE_COMPARAISON_EPSILON)
+                LeftPanel.WidthRequest = Width * _maximumTranslationAllowed;
 
-            if (Math.Abs(RightPanel.Width - (Width * _translationLimit)) > DOUBLE_COMPARAISON_EPSILON)
-                RightPanel.WidthRequest = Width * _translationLimit;
+            if (Math.Abs(RightPanel.Width - (Width * _maximumTranslationAllowed)) > DOUBLE_COMPARAISON_EPSILON)
+                RightPanel.WidthRequest = Width * _maximumTranslationAllowed;
         }
 
         #region ISwipeCallBack implementation
@@ -165,8 +165,8 @@ namespace SmoDev.Swipable
             {
                 _disablePanGesture = true;
                 _panelsState = await ValidateSwipeAsync(CenterPanel.TranslationX, _validationThreshold, _swipingState);
-
                 _swipingState = SwipingState.NotSwiping;
+
                 IsSwipping = false;
 
                 if (ParentListView != null)
@@ -206,7 +206,7 @@ namespace SmoDev.Swipable
 
             if (ok)
             {
-                ApplyTranslation(translatedX, _translationLimit, _translationOriginX);
+                ApplyTranslation(translatedX, _maximumTranslationAllowed, _translationOriginX);
             }
         }
 
@@ -339,7 +339,7 @@ namespace SmoDev.Swipable
 
             // On valide le swipe en cours => ouvre complètement le panneau
             int sign = Math.Sign(translationX);
-            _translationOriginX = sign * Width * _translationLimit;
+            _translationOriginX = sign * Width * _maximumTranslationAllowed;
             await CenterPanel.TranslateTo(_translationOriginX, 0);
             return GetSwipeDirection(translationX) == SwipeDirection.FromLeftToRight ? PanelsState.LeftPanelOpened : PanelsState.RightPanelOpened;
         }
