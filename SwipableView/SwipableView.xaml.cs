@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -278,25 +278,22 @@ namespace SmoDev.Swipable
         }
 
         /// <summary>
-        /// Valide le swipe en fonction de la translation effectuée et du seuil défini.
-        /// Si le swipe est validé, le panel est translaté jusqu'à  la limité fixée. Sinon, il retourne à sa place de départ.
+        /// Activate or cancel swipe according to translation and activation threshold.        
         /// </summary>
-        /// <param name="translationX">Translation effectuée par le swipe</param>
-        /// <param name="validationThreshold">Seuil à partir duquel le swipe est validé</param>
-        private async Task<PanelsState> ValidateSwipeAsync(double translationX, double validationThreshold, SwipingState swipingState)
+        /// <param name="panelTranslation">Panel translation</param>
+        /// <param name="validationThreshold">Threshold from which swipe action is validated</param>
+        private async Task<PanelsState> ValidateSwipeAsync(double panelTranslation, double validationThreshold, SwipingState swipingState)
         {
-            // Annule le swipe => referme le panneau
-            if (swipingState == SwipingState.ClosingLeftPanel || swipingState == SwipingState.ClosingRightPanel || !HasReachValidationThreshold(translationX, validationThreshold))
+            // Cancel swipe => Closing panel
+            if (swipingState == SwipingState.ClosingLeftPanel || swipingState == SwipingState.ClosingRightPanel || !HasReachValidationThreshold(panelTranslation, validationThreshold))
             {
-                _translationOriginX = 0;
                 await CenterPanel.TranslateTo(0, 0);
                 return PanelsState.Closed;
             }
 
-            // On valide le swipe en cours => ouvre complètement le panneau
-            int sign = Math.Sign(translationX);
-            _translationOriginX = sign * Width * _maximumTranslationAllowed;
-            await CenterPanel.TranslateTo(_translationOriginX, 0);
+            // Activated swipe => Opening panel
+            int sign = Math.Sign(panelTranslation);
+            await CenterPanel.TranslateTo(sign * Width * _maximumTranslationAllowed, 0);
             return sign == 1 ? PanelsState.LeftPanelOpened : PanelsState.RightPanelOpened;
         }
         #endregion
