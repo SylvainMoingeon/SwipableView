@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Xamarin.Forms;
 
 namespace SmoDev.Swipable
@@ -6,7 +6,6 @@ namespace SmoDev.Swipable
     public class SwipeListener : PanGestureRecognizer
     {
         private readonly ISwipeCallBack mISwipeCallback;
-        private double translatedX;
 
         /// <summary>
         /// Swipelistener constructor
@@ -16,8 +15,10 @@ namespace SmoDev.Swipable
         internal SwipeListener(View view, ISwipeCallBack iSwipeCallBack)
         {
             mISwipeCallback = iSwipeCallBack;
+
             var panGesture = new PanGestureRecognizer();
             panGesture.PanUpdated += OnPanUpdated;
+
             view.GestureRecognizers.Add(panGesture);
         }
 
@@ -32,7 +33,6 @@ namespace SmoDev.Swipable
                     break;
 
                 case GestureStatus.Running:
-                    translatedX = e.TotalX;
                     mISwipeCallback.OnSwiping(Content, e.TotalX);
                     break;
 
