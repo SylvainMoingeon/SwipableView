@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SwipableSample.MainPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:SwipableSample"
+             xmlns:swipable="clr-namespace:SmoDev.Swipable;assembly=SmoDev.Swipable"
+             >
+
+    <ContentPage.BindingContext>
+        <local:MainPageViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView x:Name="MainScrollView" VerticalOptions="FillAndExpand">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="*" />
+
+            </Grid.RowDefinitions>
+
+            <!--  LEFT AND RIGHT  -->
+            <swipable:SwipableView Grid.Row="0">
+                <swipable:SwipableView.LeftPanelView>
+                    <Frame BackgroundColor="Red" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                        <Button Clicked="LeftButton_Clicked" Text="LEFT BUTTON" />
+                    </Frame>
+                </swipable:SwipableView.LeftPanelView>
+
+                <swipable:SwipableView.RightPanelView>
+                    <Frame BackgroundColor="Blue" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                        <Button Clicked="RightButton_Clicked" Text="RIGHT BUTTON" />
+                    </Frame>
+                </swipable:SwipableView.RightPanelView>
+
+                <swipable:SwipableView.CenterPanelView>
+                    <Frame BackgroundColor="WhiteSmoke" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                        <Label HorizontalOptions="CenterAndExpand" Text="Left / Right" />
+                    </Frame>
+                </swipable:SwipableView.CenterPanelView>
+            </swipable:SwipableView>
+
+
+            <!--  RIGHT ONLY  -->
+            <swipable:SwipableView Grid.Row="1">
+                <swipable:SwipableView.RightPanelView>
+                    <Frame BackgroundColor="WhiteSmoke" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                        <Button Clicked="RightButton_Clicked" Text="RIGHT BUTTON" />
+                    </Frame>
+                </swipable:SwipableView.RightPanelView>
+
+                <swipable:SwipableView.CenterPanelView>
+                    <Frame BackgroundColor="WhiteSmoke" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                        <Label HorizontalOptions="CenterAndExpand" Text="Right only" />
+                    </Frame>
+                </swipable:SwipableView.CenterPanelView>
+            </swipable:SwipableView>
+
+
+            <!--  LEFT ONLY  -->
+            <swipable:SwipableView Grid.Row="2">
+                <swipable:SwipableView.LeftPanelView>
+                    <Frame BackgroundColor="Red" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                        <Button Clicked="LeftButton_Clicked" Text="LEFT BUTTON" />
+                    </Frame>
+                </swipable:SwipableView.LeftPanelView>
+                <swipable:SwipableView.CenterPanelView>
+                    <Frame BackgroundColor="WhiteSmoke" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                        <Label HorizontalOptions="CenterAndExpand" Text="Left only" />
+                    </Frame>
+                </swipable:SwipableView.CenterPanelView>
+            </swipable:SwipableView>
+
+            <!--  NonScrollableListView  -->
+            <StackLayout x:Name="Listview"
+                         Grid.Row="3"
+                         BackgroundColor="Transparent"
+                         Orientation="Vertical"
+                         VerticalOptions="Fill"
+                         BindableLayout.ItemsSource="{Binding Budos}"
+                         >
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <swipable:SwipableView>
+                            <swipable:SwipableView.LeftPanelView>
+                                <Frame BackgroundColor="Red"
+                                       HeightRequest="40"
+                                       HorizontalOptions="FillAndExpand"
+                                       VerticalOptions="FillAndExpand"
+                                       >
+                                    <Button Clicked="LeftButton_Clicked" Text="LEFT BUTTON" />
+                                </Frame>
+                            </swipable:SwipableView.LeftPanelView>
+
+                            <swipable:SwipableView.RightPanelView>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Frame Grid.Column="0"
+                                           BackgroundColor="Blue"
+                                           HeightRequest="40"
+                                           HorizontalOptions="Fill"
+                                           VerticalOptions="Fill"
+                                           >
+                                        <Button Clicked="RightButton_Clicked" Text="BUTTON 1" />
+                                    </Frame>
+
+                                    <Frame Grid.Column="1"
+                                           BackgroundColor="Green"
+                                           HeightRequest="40"
+                                           HorizontalOptions="Fill"
+                                           VerticalOptions="Fill"
+                                           >
+                                        <Button Clicked="RightButton_Clicked" Text="BUTTON 2" />
+                                    </Frame>
+
+                                </Grid>
+                            </swipable:SwipableView.RightPanelView>
+
+
+                            <swipable:SwipableView.CenterPanelView>
+                                <Frame BackgroundColor="WhiteSmoke"
+                                       HeightRequest="40"
+                                       HorizontalOptions="FillAndExpand"
+                                       VerticalOptions="FillAndExpand"
+                                       >
+                                    <Label HorizontalOptions="CenterAndExpand" Text="{Binding}" TextColor="Black" />
+                                </Frame>
+                            </swipable:SwipableView.CenterPanelView>
+                        </swipable:SwipableView>
+
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+
+        </Grid>
+    </ScrollView>
+
+</ContentPage>
