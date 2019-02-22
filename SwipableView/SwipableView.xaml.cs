@@ -126,10 +126,6 @@ namespace SmoDev.Swipable
         {
             InitializeComponent();
 
-            // Par défaut les panels ne sont pas visibles
-            LeftPanel.IsVisible = false;
-            RightPanel.IsVisible = false;
-
             var Swipelistener = new SwipeListener(this, this);
             LayoutChanged += SwipableView_LayoutChanged;
 
@@ -199,7 +195,8 @@ namespace SmoDev.Swipable
             IsSwipping = true;
 
             _swipingState = GetSwipingState(CenterPanel.TranslationX, translatedX);
-            SetPanelsVisibility();
+
+            SetPanelsVisibility(_swipingState);
 
             bool ok = ((_swipingState == SwipingState.ClosingLeftPanel || _swipingState == SwipingState.OpeningLeftPanel) && _hasLeftPanel)
                 || ((_swipingState == SwipingState.ClosingRightPanel || _swipingState == SwipingState.OpeningRightPanel) && _hasRightPanel);
@@ -229,13 +226,10 @@ namespace SmoDev.Swipable
         /// <summary>
         /// Show or hide left/right panels depending on swipe state
         /// </summary>
-        private void SetPanelsVisibility()
+        private void SetPanelsVisibility(SwipingState swipingState)
         {
-            if (_hasLeftPanel)
-                LeftPanel.IsVisible = CenterPanel.TranslationX > 0;
-
-            if (_hasRightPanel)
-                RightPanel.IsVisible = CenterPanel.TranslationX < 0;
+            RightPanel.IsVisible = _hasRightPanel && (swipingState == SwipingState.ClosingRightPanel || swipingState == SwipingState.OpeningRightPanel);
+            LeftPanel.IsVisible = _hasLeftPanel && (swipingState == SwipingState.ClosingLeftPanel || swipingState == SwipingState.OpeningLeftPanel);          
         }
         #endregion
 
