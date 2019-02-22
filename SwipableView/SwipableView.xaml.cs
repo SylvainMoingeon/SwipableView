@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace SmoDev.Swipable
 
         #region enums
         /// <summary>
-        /// Swiping State. Are panels opening or closing. Or not.
+        /// Swiping State. Are panels opening or closing. Or not swiping.
         /// </summary>
         private enum SwipingState
         {
@@ -42,7 +42,7 @@ namespace SmoDev.Swipable
         }
 
         /// <summary>
-        /// Panels state. Are they opened, closed or swiping
+        /// Panels state. Are they opened or closed
         /// </summary>
         private enum PanelsState
         {
@@ -68,49 +68,56 @@ namespace SmoDev.Swipable
 
         #region Fields
         /// <summary>
-        /// Coordonnée d'origine de la translation (utilisé pour iOS qui gère la translation différemment de Android)
+        /// Starting X coordinate of translation
         /// </summary>
         private double _translationOriginX;
 
         private bool _ParentListView_IsPullToRefreshEnabled;
 
         /// <summary>
-        /// Seuil de validation du swipe en fraction de la largeur disponible
+        /// Translation threshold to validate swipe action (fraction of the view width)
         /// </summary>
         private const double _validationThreshold = 1d / 3d;
 
         /// <summary>
-        /// Limite de translation en fraction de la largeur disponible
+        /// Maximum translation allowed (fraction of the view width)
         /// </summary>        
         private const double _translationLimit = 2d / 3d;
 
+        /// <summary>
+        /// Has user defined a left panel
+        /// </summary>
         private bool _hasLeftPanel => LeftPanelView != null;
+
+        /// <summary>
+        /// Has user defined a right panel
+        /// </summary>
         private bool _hasRightPanel => RightPanelView != null;
 
         /// <summary>
-        /// Etat du swipe
+        /// Current swiping state
         /// </summary>
         private SwipingState _swipingState;
 
         /// <summary>
-        ///Etat des panneaux
+        /// Panels state
         /// </summary>
         private PanelsState _panelsState;
 
         /// <summary>
-        /// Indique si le pan est autorisé ou non (par exemple, on ne doit pas swiper si le panneau est en cours d'animation)
+        ///  Indicates whether user is allowed to pan (for instance, disallowed is panel is self-closing or self-opening)
         /// </summary>
         private bool _disablePanGesture;
         #endregion
 
         #region Platform specific
         /// <summary>
-        /// Le renderer android qui empêche la vue parente (scrollview par exemple) d'interférer avec le Swipe en a besoin
+        /// Android renderer need it to prevent scrollview from interfering with swipe
         /// </summary>
         public bool IsSwipping { get; private set; }
 
         /// <summary>
-        /// Pour iOS, pas besoin de renderer, une simple ligne de code suffit
+        /// Ensure that specific ios configuration is set only once
         /// </summary>
         private static bool _specificiOsConfigurationSet;
         #endregion
@@ -126,6 +133,7 @@ namespace SmoDev.Swipable
             var Swipelistener = new SwipeListener(this, this);
             LayoutChanged += SwipableView_LayoutChanged;
 
+            // Avoid bugs on iOS when swiping inside a scrollview. Set only once (static method)
             if (!_specificiOsConfigurationSet)
             {
                 _specificiOsConfigurationSet = true;
@@ -135,7 +143,7 @@ namespace SmoDev.Swipable
 
         private void SwipableView_LayoutChanged(object sender, EventArgs e)
         {
-            // On dimensionne les panneaux en fonction de la largeur du conteneur et de la limite de translation autorisée
+            // Resize the panels according to the width of the view and the maximum translation allowed
             if (Math.Abs(CenterPanel.Width - Width) > DOUBLE_COMPARAISON_EPSILON)
                 CenterPanel.WidthRequest = Width;
 
@@ -147,6 +155,10 @@ namespace SmoDev.Swipable
         }
 
         #region ISwipeCallBack implementation
+        /// <summary>
+        /// Swipe is completed.
+        /// </summary>
+        /// <param name="view">View on wich user swiped</param>
         public async void OnSwipeCompleted(View view)
         {
             try
@@ -170,12 +182,17 @@ namespace SmoDev.Swipable
             }
         }
 
+        /// <summary>
+        /// Swiping
+        /// </summary>
+        /// <param name="view">View on wich user is swiping</param>
+        /// <param name="translatedX"></param>
         public void OnSwiping(View view, double translatedX)
         {
             if (_disablePanGesture)
                 return;
 
-            // Evite les effets de bord quand on swipe vers le haut ou vers le bas !
+            // Avoids false positives
             if (Math.Abs(translatedX) < 0.005)
                 return;
 
@@ -200,7 +217,7 @@ namespace SmoDev.Swipable
 
             _translationOriginX = CenterPanel.TranslationX;
 
-            // Evite des effets de bord avec les listView
+            // Avoid bugs with listView when IsPullToRefreshEnabled == true
             if (ParentListView != null)
             {
                 _ParentListView_IsPullToRefreshEnabled = ParentListView.IsPullToRefreshEnabled;
@@ -210,7 +227,7 @@ namespace SmoDev.Swipable
         }
 
         /// <summary>
-        /// Affiche ou cache les panneaux de droite et de gauche en fonction de la position du panneau central
+        /// Show or hide left/right panels depending on swipe state
         /// </summary>
         private void SetPanelsVisibility()
         {

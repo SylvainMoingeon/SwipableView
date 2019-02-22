@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Xamarin.Forms;
 
 namespace SmoDev.Swipable
@@ -8,6 +8,11 @@ namespace SmoDev.Swipable
         private readonly ISwipeCallBack mISwipeCallback;
         private double translatedX;
 
+        /// <summary>
+        /// Swipelistener constructor
+        /// </summary>
+        /// <param name="view">View that is listened for swipe</param>
+        /// <param name="iSwipeCallBack">Class where the swipecallback is implemented</param>
         internal SwipeListener(View view, ISwipeCallBack iSwipeCallBack)
         {
             mISwipeCallback = iSwipeCallBack;
