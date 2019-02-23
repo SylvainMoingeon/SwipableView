@@ -14,14 +14,19 @@ namespace SwipableSample
             InitializeComponent();
         }
 
-        private void RightButton_Clicked(object sender, EventArgs e)
+        protected override void OnAppearing()
         {
-            Console.WriteLine("RIGHT BUTTON CLICKED");
+            base.OnAppearing();
+            MessagingCenter.Subscribe<string>(this, MessagingCenterMessages.SendMessage, (message) =>
+            {
+                DisplayAlert("Message received", message, "Cancel");
+            });
         }
 
-        private void LeftButton_Clicked(object sender, EventArgs e)
+        protected override void OnDisappearing()
         {
-            Console.WriteLine("LEFT BUTTON CLICKED");
+            base.OnDisappearing();
+            MessagingCenter.Unsubscribe<string>(this, MessagingCenterMessages.SendMessage);
         }
     }
 }

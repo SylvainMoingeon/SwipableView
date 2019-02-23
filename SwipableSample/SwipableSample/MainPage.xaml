@@ -5,91 +5,160 @@
              xmlns:local="clr-namespace:SwipableSample"
              xmlns:swipable="clr-namespace:SmoDev.Swipable;assembly=SmoDev.Swipable"
              >
+    <ContentPage.Padding>
+        <OnPlatform x:TypeArguments="Thickness"
+                    Default="0"
+                    iOS="0,20,0,0"
+                    />
+    </ContentPage.Padding>
 
     <ContentPage.BindingContext>
         <local:MainPageViewModel />
     </ContentPage.BindingContext>
 
-    <ScrollView x:Name="MainScrollView" VerticalOptions="FillAndExpand">
-        <Grid>
+    <ScrollView VerticalOptions="FillAndExpand">
+
+        <Grid x:Name="LayoutRoot">
             <Grid.RowDefinitions>
-                <RowDefinition Height="50" />
-                <RowDefinition Height="50" />
-                <RowDefinition Height="50" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
 
             </Grid.RowDefinitions>
 
             <!--  LEFT AND RIGHT  -->
-            <swipable:SwipableView Grid.Row="0">
-                <swipable:SwipableView.LeftPanelView>
-                    <Frame BackgroundColor="Red" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                        <Button Clicked="LeftButton_Clicked" Text="LEFT BUTTON" />
-                    </Frame>
-                </swipable:SwipableView.LeftPanelView>
+            <StackLayout Grid.Row="0" Orientation="Vertical">
+                <Label HorizontalTextAlignment="Center" Text="Swipable View with left and right panels" />
 
-                <swipable:SwipableView.RightPanelView>
-                    <Frame BackgroundColor="Blue" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                        <Button Clicked="RightButton_Clicked" Text="RIGHT BUTTON" />
-                    </Frame>
-                </swipable:SwipableView.RightPanelView>
+                <swipable:SwipableView HeightRequest="80"
+                                       SwipeOffset="200"
+                                       SwipeValidationThreshold="50"
+                                       >
+                    <swipable:SwipableView.LeftPanelView>
 
-                <swipable:SwipableView.CenterPanelView>
-                    <Frame BackgroundColor="WhiteSmoke" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                        <Label HorizontalOptions="CenterAndExpand" Text="Left / Right" />
-                    </Frame>
-                </swipable:SwipableView.CenterPanelView>
-            </swipable:SwipableView>
+                        <Button Command="{Binding MessageCommand}"
+                                CommandParameter="Can bind and fire commands"
+                                Text="Click here !"
+                                />
 
+                    </swipable:SwipableView.LeftPanelView>
+
+                    <swipable:SwipableView.RightPanelView>
+                        <Label TextColor="White"
+                               Text="Just some text"
+                               BackgroundColor="Black"
+                               HorizontalOptions="FillAndExpand"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"
+                               />
+
+                    </swipable:SwipableView.RightPanelView>
+
+                    <swipable:SwipableView.CenterPanelView>
+
+                        <Label HorizontalOptions="FillAndExpand"
+                               Text="Each panel can be everything you want."
+                               LineBreakMode="WordWrap"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"
+                               BackgroundColor="White"
+                               />
+                    </swipable:SwipableView.CenterPanelView>
+                </swipable:SwipableView>
+
+            </StackLayout>
 
             <!--  RIGHT ONLY  -->
-            <swipable:SwipableView Grid.Row="1">
-                <swipable:SwipableView.RightPanelView>
-                    <Frame BackgroundColor="WhiteSmoke" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                        <Button Clicked="RightButton_Clicked" Text="RIGHT BUTTON" />
-                    </Frame>
-                </swipable:SwipableView.RightPanelView>
+            <StackLayout Grid.Row="1" Orientation="Vertical">
+                <Label HorizontalTextAlignment="Center" Text="Swipable View with right panel only" />
+                <swipable:SwipableView HeightRequest="80"
+                                       SwipeOffset="200"
+                                       SwipeValidationThreshold="50"
+                                       >
+                    <swipable:SwipableView.RightPanelView>
+                        <Frame BackgroundColor="WhiteSmoke"
+                               HorizontalOptions="FillAndExpand"
+                               VerticalOptions="FillAndExpand"
+                               >
+                            <Button Command="{Binding MessageCommand}"
+                                    CommandParameter="You clicked right button"
+                                    Text="Right button"
+                                    />
+                        </Frame>
+                    </swipable:SwipableView.RightPanelView>
 
-                <swipable:SwipableView.CenterPanelView>
-                    <Frame BackgroundColor="WhiteSmoke" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                        <Label HorizontalOptions="CenterAndExpand" Text="Right only" />
-                    </Frame>
-                </swipable:SwipableView.CenterPanelView>
-            </swipable:SwipableView>
+                    <swipable:SwipableView.CenterPanelView>
+                        <Frame BackgroundColor="WhiteSmoke"
+                               HorizontalOptions="FillAndExpand"
+                               VerticalOptions="FillAndExpand"
+                               >
+                            <Label HorizontalOptions="CenterAndExpand" Text="Right only" />
+                        </Frame>
+                    </swipable:SwipableView.CenterPanelView>
+                </swipable:SwipableView>
+            </StackLayout>
 
 
             <!--  LEFT ONLY  -->
-            <swipable:SwipableView Grid.Row="2">
-                <swipable:SwipableView.LeftPanelView>
-                    <Frame BackgroundColor="Red" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                        <Button Clicked="LeftButton_Clicked" Text="LEFT BUTTON" />
-                    </Frame>
-                </swipable:SwipableView.LeftPanelView>
-                <swipable:SwipableView.CenterPanelView>
-                    <Frame BackgroundColor="WhiteSmoke" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                        <Label HorizontalOptions="CenterAndExpand" Text="Left only" />
-                    </Frame>
-                </swipable:SwipableView.CenterPanelView>
-            </swipable:SwipableView>
+            <StackLayout Grid.Row="2" Orientation="Vertical">
+                <Label HorizontalTextAlignment="Center" Text="Swipable View with left panel only" />
+                <swipable:SwipableView HeightRequest="80"
+                                       SwipeOffset="200"
+                                       SwipeValidationThreshold="50"
+                                       >
+                    <swipable:SwipableView.LeftPanelView>
 
-            <!--  NonScrollableListView  -->
+                        <ImageButton Padding="10"
+                                     Source="ic_action_place.png"
+                                     Command="{Binding MessageCommand}"
+                                     CommandParameter="You are here !"
+                                     BackgroundColor="Transparent"
+                                     HeightRequest="20"
+                                     WidthRequest="20"
+                                     />
+
+                    </swipable:SwipableView.LeftPanelView>
+                    <swipable:SwipableView.CenterPanelView>
+                        <Frame BackgroundColor="WhiteSmoke"
+                               HorizontalOptions="FillAndExpand"
+                               VerticalOptions="FillAndExpand"
+                               >
+                            <Label HorizontalOptions="CenterAndExpand" Text="Left only" />
+                        </Frame>
+                    </swipable:SwipableView.CenterPanelView>
+                </swipable:SwipableView>
+            </StackLayout>
+
+
+
+            <!--  Bindable Layout  -->
+            <Label Grid.Row="3"
+                   HorizontalTextAlignment="Center"
+                   Text="Swipable view as ItemTemplate inside a Bindable StackLayout"
+                   />
+
             <StackLayout x:Name="Listview"
-                         Grid.Row="3"
+                         Grid.Row="4"
                          BackgroundColor="Transparent"
+                         BindableLayout.ItemsSource="{Binding Budos}"
                          Orientation="Vertical"
                          VerticalOptions="Fill"
-                         BindableLayout.ItemsSource="{Binding Budos}"
                          >
                 <BindableLayout.ItemTemplate>
                     <DataTemplate>
-                        <swipable:SwipableView>
+                        <swipable:SwipableView SwipeOffset="250" SwipeValidationThreshold="50">
                             <swipable:SwipableView.LeftPanelView>
-                                <Frame BackgroundColor="Red"
+                                <Frame BackgroundColor="DarkRed"
                                        HeightRequest="40"
                                        HorizontalOptions="FillAndExpand"
                                        VerticalOptions="FillAndExpand"
                                        >
-                                    <Button Clicked="LeftButton_Clicked" Text="LEFT BUTTON" />
+                                    <Button Command="{Binding BindingContext.HelloCommand, Source={x:Reference LayoutRoot}}"
+                                            CommandParameter="{Binding}"
+                                            Text="Hello"
+                                            />
                                 </Frame>
                             </swipable:SwipableView.LeftPanelView>
 
@@ -101,21 +170,27 @@
                                     </Grid.ColumnDefinitions>
 
                                     <Frame Grid.Column="0"
-                                           BackgroundColor="Blue"
+                                           BackgroundColor="LightGray"
                                            HeightRequest="40"
                                            HorizontalOptions="Fill"
                                            VerticalOptions="Fill"
                                            >
-                                        <Button Clicked="RightButton_Clicked" Text="BUTTON 1" />
+                                        <Button Command="{Binding BindingContext.HelloCommand, Source={x:Reference LayoutRoot}}"
+                                                CommandParameter="{Binding}"
+                                                Text="Hello"
+                                                />
                                     </Frame>
 
                                     <Frame Grid.Column="1"
-                                           BackgroundColor="Green"
+                                           BackgroundColor="DarkGray"
                                            HeightRequest="40"
                                            HorizontalOptions="Fill"
                                            VerticalOptions="Fill"
                                            >
-                                        <Button Clicked="RightButton_Clicked" Text="BUTTON 2" />
+                                        <Button Command="{Binding BindingContext.HelloCommand, Source={x:Reference LayoutRoot}}"
+                                                CommandParameter="{Binding}"
+                                                Text="Hello"
+                                                />
                                     </Frame>
 
                                 </Grid>
@@ -128,7 +203,10 @@
                                        HorizontalOptions="FillAndExpand"
                                        VerticalOptions="FillAndExpand"
                                        >
-                                    <Label HorizontalOptions="CenterAndExpand" Text="{Binding}" TextColor="Black" />
+                                    <Label HorizontalOptions="CenterAndExpand"
+                                           Text="{Binding}"
+                                           TextColor="Black"
+                                           />
                                 </Frame>
                             </swipable:SwipableView.CenterPanelView>
                         </swipable:SwipableView>
