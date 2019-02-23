@@ -4,6 +4,10 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>SmoDev.Swipable</AssemblyName>
     <RootNamespace>SmoDev.Swipable</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>smodev.swipable</PackageId>
+    <Authors>Sylvain Moingeon</Authors>
+    <Description>A Xamarin.Forms view providing swipe actions on Android, iOS and UWP: swipe left or right to display the contents of the lower panels.</Description>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,22 +1,28 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<ContentView x:Class="SmoDev.Swipable.SwipableView" xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-    <Grid x:Name="swipableLayout" Margin="0" Padding="0">
-        <ContentView x:Name="LeftPanel"
-                     Padding="0"
-                     HorizontalOptions="Start"
-                     BackgroundColor="Transparent"
-                     />
+<ContentView
+    x:Class="SmoDev.Swipable.SwipableView"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Grid
+        x:Name="swipableLayout"
+        Margin="0"
+        Padding="0">
+        <ContentView
+            x:Name="LeftPanel"
+            Padding="0"
+            BackgroundColor="Transparent"
+            HorizontalOptions="Start" />
 
-        <ContentView x:Name="RightPanel"
-                     Padding="0"
-                     HorizontalOptions="End"
-                     BackgroundColor="Transparent"
-                     />
+        <ContentView
+            x:Name="RightPanel"
+            Padding="0"
+            BackgroundColor="Transparent"
+            HorizontalOptions="End" />
 
-        <ContentView x:Name="CenterPanel"
-                     Padding="0"
-                     HorizontalOptions="Center"
-                     BackgroundColor="Transparent"
-                     />
+        <ContentView
+            x:Name="CenterPanel"
+            Padding="0"
+            BackgroundColor="Transparent"
+            HorizontalOptions="Center" />
     </Grid>
 </ContentView>

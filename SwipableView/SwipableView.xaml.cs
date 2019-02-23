@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -75,16 +75,6 @@ namespace SmoDev.Swipable
         private bool _ParentListView_IsPullToRefreshEnabled;
 
         /// <summary>
-        /// Translation threshold to validate swipe action (fraction of the view width)
-        /// </summary>
-        private const double _validationThreshold = 1d / 3d;
-
-        /// <summary>
-        /// Maximum translation allowed (fraction of the view width)
-        /// </summary>        
-        private const double _maximumTranslationAllowed = 2d / 3d;
-
-        /// <summary>
         /// Has user defined a left panel
         /// </summary>
         private bool _hasLeftPanel => LeftPanelView != null;
@@ -143,11 +133,11 @@ namespace SmoDev.Swipable
             if (Math.Abs(CenterPanel.Width - Width) > DOUBLE_COMPARAISON_EPSILON)
                 CenterPanel.WidthRequest = Width;
 
-            if (Math.Abs(LeftPanel.Width - (Width * _maximumTranslationAllowed)) > DOUBLE_COMPARAISON_EPSILON)
-                LeftPanel.WidthRequest = Width * _maximumTranslationAllowed;
+            if (Math.Abs(LeftPanel.Width - SwipeOffset) > DOUBLE_COMPARAISON_EPSILON)
+                LeftPanel.WidthRequest = SwipeOffset;
 
-            if (Math.Abs(RightPanel.Width - (Width * _maximumTranslationAllowed)) > DOUBLE_COMPARAISON_EPSILON)
-                RightPanel.WidthRequest = Width * _maximumTranslationAllowed;
+            if (Math.Abs(RightPanel.Width - SwipeOffset) > DOUBLE_COMPARAISON_EPSILON)
+                RightPanel.WidthRequest = SwipeOffset;
         }
 
         #region ISwipeCallBack implementation
@@ -160,7 +150,7 @@ namespace SmoDev.Swipable
             try
             {
                 _disablePanGesture = true;
-                _panelsState = await ValidateSwipeAsync(CenterPanel.TranslationX, _validationThreshold, _swipingState);
+                _panelsState = await ValidateSwipeAsync(CenterPanel.TranslationX, SwipeValidationThreshold, SwipeOffset, _swipingState);
                 _swipingState = SwipingState.NotSwiping;
 
                 IsSwipping = false;
@@ -202,7 +192,7 @@ namespace SmoDev.Swipable
             if ((_hasLeftPanel && (_swipingState == SwipingState.ClosingLeftPanel || _swipingState == SwipingState.OpeningLeftPanel))
                 || (_hasRightPanel && (_swipingState == SwipingState.ClosingRightPanel || _swipingState == SwipingState.OpeningRightPanel)))
             {
-                CenterPanel.TranslationX = GetTranslationToApply(translatedX, _maximumTranslationAllowed, _translationOriginX);
+                CenterPanel.TranslationX = GetTranslationToApply(translatedX, SwipeOffset, _translationOriginX);
             }
         }
 
@@ -237,11 +227,11 @@ namespace SmoDev.Swipable
         /// Apply translation to the Center Panel
         /// </summary>
         /// <param name="translatedX"></param>
-        /// <param name="maximumTranslationAllowed">Maximum translation allowed. In fraction of view width.</param> 
+        /// <param name="swipeOffset">Maximum translation allowed.</param> 
         /// <returns>Translation to apply to center panel, according to translatedX and maximum translation allowed</returns>
-        private double GetTranslationToApply(double translatedX, double maximumTranslationAllowed, double translationOriginX)
+        private double GetTranslationToApply(double translatedX, double swipeOffset, double translationOriginX)
         {
-            double translationMax = Math.Sign(translatedX) * Width * maximumTranslationAllowed;
+            double translationMax = Math.Sign(translatedX) * swipeOffset;
             double translationToApply = translationOriginX + translatedX;
 
             return Math.Abs(translationToApply) >= Math.Abs(translationMax) ? translationMax : translationToApply;
@@ -274,7 +264,7 @@ namespace SmoDev.Swipable
         /// <returns><see langword="true"/> if translationX has reached validation threshold. <see langword="false"/> otherwise</returns>
         private bool HasReachValidationThreshold(double translationX, double validationThreshold)
         {
-            return Math.Sign(translationX) > 0 ? translationX > Width * validationThreshold : translationX < -Width * validationThreshold;
+            return Math.Abs(translationX) >= Math.Abs(validationThreshold);
         }
 
         /// <summary>
@@ -282,7 +272,7 @@ namespace SmoDev.Swipable
         /// </summary>
         /// <param name="panelTranslation">Panel translation</param>
         /// <param name="validationThreshold">Threshold from which swipe action is validated</param>
-        private async Task<PanelsState> ValidateSwipeAsync(double panelTranslation, double validationThreshold, SwipingState swipingState)
+        private async Task<PanelsState> ValidateSwipeAsync(double panelTranslation, double validationThreshold, double swipeOffset, SwipingState swipingState)
         {
             // Cancel swipe => Closing panel
             if (swipingState == SwipingState.ClosingLeftPanel || swipingState == SwipingState.ClosingRightPanel || !HasReachValidationThreshold(panelTranslation, validationThreshold))
@@ -293,7 +283,7 @@ namespace SmoDev.Swipable
 
             // Activated swipe => Opening panel
             int sign = Math.Sign(panelTranslation);
-            await CenterPanel.TranslateTo(sign * Width * _maximumTranslationAllowed, 0);
+            await CenterPanel.TranslateTo(sign * swipeOffset, 0);
             return sign == 1 ? PanelsState.LeftPanelOpened : PanelsState.RightPanelOpened;
         }
         #endregion
@@ -387,25 +377,48 @@ namespace SmoDev.Swipable
         }
         #endregion
 
-        #region ParentScrollView
+
+        #region SwipeValidationThreshold
         // Bindable property
-        public static readonly BindableProperty ParentScrollViewProperty =
+        public static readonly BindableProperty SwipeValidationThresholdProperty =
           BindableProperty.Create(
-             propertyName: nameof(ParentScrollView),
+             propertyName: nameof(SwipeValidationThreshold),
              declaringType: typeof(SwipableView),
-             returnType: typeof(Xamarin.Forms.ScrollView),
-             defaultValue: null,
+             returnType: typeof(double),
+             defaultValue: 50d,
              defaultBindingMode: BindingMode.OneWay,
              propertyChanged: (bindable, oldValue, newValue) =>
              { });
 
+
         // Gets or sets value of this BindableProperty
-        public Xamarin.Forms.ScrollView ParentScrollView
+        public double SwipeValidationThreshold
         {
-            get => (Xamarin.Forms.ScrollView)GetValue(ParentScrollViewProperty);
-            set => SetValue(ParentScrollViewProperty, value);
+            get => (double)GetValue(SwipeValidationThresholdProperty);
+            set => SetValue(SwipeValidationThresholdProperty, value);
         }
-        #endregion   
+        #endregion
+
+        #region SwipeOffset
+        // Bindable property
+        public static readonly BindableProperty SwipeOffsetProperty =
+          BindableProperty.Create(
+             propertyName: nameof(SwipeOffset),
+             declaringType: typeof(SwipableView),
+             returnType: typeof(double),
+             defaultValue: 100d,
+             defaultBindingMode: BindingMode.OneWay,
+             propertyChanged: (bindable, oldValue, newValue) =>
+             { });
+
+
+        // Gets or sets value of this BindableProperty
+        public double SwipeOffset
+        {
+            get => (double)GetValue(SwipeOffsetProperty);
+            set => SetValue(SwipeOffsetProperty, value);
+        }
+        #endregion
         #endregion
     }
 }
