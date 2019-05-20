@@ -23,6 +23,6 @@
             x:Name="CenterPanel"
             Padding="0"
             BackgroundColor="Transparent"
-            HorizontalOptions="Center" />
+            HorizontalOptions="Fill" />
     </Grid>
 </ContentView>
