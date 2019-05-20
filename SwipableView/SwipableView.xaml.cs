@@ -129,7 +129,7 @@ namespace SmoDev.Swipable
 
         private void SwipableView_LayoutChanged(object sender, EventArgs e)
         {
-            // Resize the panels according to the width of the view and the maximum translation allowed
+            // Resize the panels according to the width of the view and the swipe offset
             if (Math.Abs(CenterPanel.Width - Width) > DOUBLE_COMPARAISON_EPSILON)
                 CenterPanel.WidthRequest = Width;
 
@@ -187,7 +187,6 @@ namespace SmoDev.Swipable
             _swipingState = GetSwipingState(CenterPanel.TranslationX, translatedX);
 
             SetPanelsVisibility(_swipingState);
-
 
             if ((_hasLeftPanel && (_swipingState == SwipingState.ClosingLeftPanel || _swipingState == SwipingState.OpeningLeftPanel))
                 || (_hasRightPanel && (_swipingState == SwipingState.ClosingRightPanel || _swipingState == SwipingState.OpeningRightPanel)))
@@ -302,7 +301,6 @@ namespace SmoDev.Swipable
                 ((SwipableView)bindable).LeftPanel.Content = (View)newValue;
             });
 
-
         // Gets or sets value of this BindableProperty
         public View LeftPanelView
         {
@@ -325,7 +323,6 @@ namespace SmoDev.Swipable
              }
         );
 
-
         // Gets or sets value of this BindableProperty
         public View RightPanelView
         {
@@ -347,7 +344,6 @@ namespace SmoDev.Swipable
                  ((SwipableView)bindable).CenterPanel.Content = (View)newValue;
              });
 
-
         // Gets or sets value of this BindableProperty
         public View CenterPanelView
         {
@@ -368,7 +364,6 @@ namespace SmoDev.Swipable
              propertyChanged: (bindable, oldValue, newValue) =>
              { });
 
-
         // Gets or sets value of this BindableProperty
         public ListView ParentListView
         {
@@ -376,7 +371,6 @@ namespace SmoDev.Swipable
             set => SetValue(ParentListViewProperty, value);
         }
         #endregion
-
 
         #region SwipeValidationThreshold
         // Bindable property
@@ -389,7 +383,6 @@ namespace SmoDev.Swipable
              defaultBindingMode: BindingMode.OneWay,
              propertyChanged: (bindable, oldValue, newValue) =>
              { });
-
 
         // Gets or sets value of this BindableProperty
         public double SwipeValidationThreshold
@@ -410,7 +403,6 @@ namespace SmoDev.Swipable
              defaultBindingMode: BindingMode.OneWay,
              propertyChanged: (bindable, oldValue, newValue) =>
              { });
-
 
         // Gets or sets value of this BindableProperty
         public double SwipeOffset
