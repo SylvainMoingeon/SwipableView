@@ -44,7 +44,7 @@ namespace SmoDev.Swipable
         /// <summary>
         /// Panels state. Are they opened or closed
         /// </summary>
-        private enum PanelsState
+        private enum PanelState
         {
             [Description("left and right Panels closed")]
             Closed = 0, // valeur par défaut, ne pas modifier !
@@ -92,7 +92,7 @@ namespace SmoDev.Swipable
         /// <summary>
         /// Panels state
         /// </summary>
-        private PanelsState _panelsState;
+        private PanelState _panelState;
 
         /// <summary>
         ///  Indicates whether user is allowed to pan (for instance, disallowed is panel is self-closing or self-opening)
@@ -116,7 +116,7 @@ namespace SmoDev.Swipable
         {
             InitializeComponent();
 
-            var Swipelistener = new SwipeListener(this, this);
+            new SwipeListener(this, this);
             LayoutChanged += SwipableView_LayoutChanged;
 
             // Avoid bugs on iOS when swiping inside a scrollview. Set only once (static method)
@@ -150,13 +150,15 @@ namespace SmoDev.Swipable
             try
             {
                 _disablePanGesture = true;
-                _panelsState = await ValidateSwipeAsync(CenterPanel.TranslationX, SwipeValidationThreshold, SwipeOffset, _swipingState);
+
+                await ValidateSwipeAsync(CenterPanel.TranslationX, SwipeValidationThreshold, SwipeOffset, _swipingState);
                 _swipingState = SwipingState.NotSwiping;
 
                 IsSwipping = false;
 
                 if (ParentListView != null)
                 {
+                    // Avoid bugs with listView when IsPullToRefreshEnabled == true
                     ParentListView.IsPullToRefreshEnabled = _ParentListView_IsPullToRefreshEnabled;
                 }
 
@@ -233,7 +235,9 @@ namespace SmoDev.Swipable
             double translationMax = Math.Sign(translatedX) * swipeOffset;
             double translationToApply = translationOriginX + translatedX;
 
-            return Math.Abs(translationToApply) >= Math.Abs(translationMax) ? translationMax : translationToApply;
+            return (!_hasLeftPanel && translationToApply > 0) || (!_hasRightPanel && translationToApply < 0)
+                ? 0
+                : Math.Abs(translationToApply) >= Math.Abs(translationMax) ? translationMax : translationToApply;
         }
 
         /// <summary>
@@ -271,19 +275,38 @@ namespace SmoDev.Swipable
         /// </summary>
         /// <param name="panelTranslation">Panel translation</param>
         /// <param name="validationThreshold">Threshold from which swipe action is validated</param>
-        private async Task<PanelsState> ValidateSwipeAsync(double panelTranslation, double validationThreshold, double swipeOffset, SwipingState swipingState)
+        private async Task ValidateSwipeAsync(double panelTranslation, double validationThreshold, double swipeOffset, SwipingState swipingState)
         {
             // Cancel swipe => Closing panel
             if (swipingState == SwipingState.ClosingLeftPanel || swipingState == SwipingState.ClosingRightPanel || !HasReachValidationThreshold(panelTranslation, validationThreshold))
             {
-                await CenterPanel.TranslateTo(0, 0);
-                return PanelsState.Closed;
+                await ClosePanel();
             }
-
             // Activated swipe => Opening panel
+            else
+            {
+                await OpenPanel(panelTranslation, swipeOffset);
+            }
+        }
+
+        /// <summary>
+        /// Open panel and fire PanelStateChanged event
+        /// </summary>
+        private async Task OpenPanel(double panelTranslation, double swipeOffset)
+        {
+
             int sign = Math.Sign(panelTranslation);
             await CenterPanel.TranslateTo(sign * swipeOffset, 0);
-            return sign == 1 ? PanelsState.LeftPanelOpened : PanelsState.RightPanelOpened;
+            _panelState = sign == 1 ? PanelState.LeftPanelOpened : PanelState.RightPanelOpened;
+        }
+
+        /// <summary>
+        /// Close panel and fire PanelStateChanged event
+        /// </summary>
+        public async Task ClosePanel()
+        {
+            await CenterPanel.TranslateTo(0, 0);
+            _panelState = PanelState.Closed;
         }
         #endregion
 
@@ -411,6 +434,7 @@ namespace SmoDev.Swipable
             set => SetValue(SwipeOffsetProperty, value);
         }
         #endregion
+
         #endregion
     }
 }
