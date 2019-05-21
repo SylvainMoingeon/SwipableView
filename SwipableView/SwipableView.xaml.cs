@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -29,6 +29,20 @@ namespace SmoDev.Swipable
         protected virtual void OnClosing(EventArgs e)
         {
             Closing?.Invoke(this, e);
+        }
+
+        public event EventHandler<EventArgs> Opened;
+
+        protected virtual void OnOpened(EventArgs e)
+        {
+            Opened?.Invoke(this, e);
+        }
+
+        public event EventHandler<EventArgs> Closed;
+
+        protected virtual void OnClosed(EventArgs e)
+        {
+            Closed?.Invoke(this, e);
         }
         #endregion
 
@@ -304,6 +318,8 @@ namespace SmoDev.Swipable
             int sign = Math.Sign(panelTranslation);
             await CenterPanel.TranslateTo(sign * swipeOffset, 0);
             _panelState = sign == 1 ? PanelState.LeftPanelOpened : PanelState.RightPanelOpened;
+
+            OnOpened(EventArgs.Empty);
         }
 
         /// <summary>
@@ -315,6 +331,8 @@ namespace SmoDev.Swipable
 
             await CenterPanel.TranslateTo(0, 0);
             _panelState = PanelState.Closed;
+
+            OnClosed(EventArgs.Empty);
         }
         #endregion
 
