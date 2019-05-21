@@ -9,6 +9,42 @@ using ListView = Xamarin.Forms.ListView;
 
 namespace SmoDev.Swipable
 {
+    /// <summary>
+    /// Swiping State. Are panels opening or closing. Or not swiping.
+    /// </summary>
+    public enum SwipeAction
+    {
+        [Description("Not swiping")]
+        NotSwiping = 0,
+
+        [Description("Opening the right panel (swiping from right to left)")]
+        OpeningRightPanel,
+
+        [Description("Opening the left panel (swiping from left to right)")]
+        OpeningLeftPanel,
+
+        [Description("Closing the right panel (swiping from left to right)")]
+        ClosingRightPanel,
+
+        [Description("Closing the left panel (swiping from right to left)")]
+        ClosingLeftPanel,
+    }
+
+    /// <summary>
+    /// Panels state. Are they opened or closed
+    /// </summary>
+    public enum PanelState
+    {
+        [Description("left and right Panels closed")]
+        Closed = 0, // valeur par défaut, ne pas modifier !
+
+        [Description("Right panel opened")]
+        RightPanelOpened,
+
+        [Description("Left panel opened")]
+        LeftPanelOpened
+    }
+
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SwipableView : ContentView, ISwipeCallBack
     {
@@ -46,46 +82,29 @@ namespace SmoDev.Swipable
         }
         #endregion
 
-        #region enums
-        /// <summary>
-        /// Swiping State. Are panels opening or closing. Or not swiping.
-        /// </summary>
-        private enum SwipeAction
-        {
-            [Description("Not swiping")]
-            NotSwiping = 0,
-
-            [Description("Opening the right panel (swiping from right to left)")]
-            OpeningRightPanel,
-
-            [Description("Opening the left panel (swiping from left to right)")]
-            OpeningLeftPanel,
-
-            [Description("Closing the right panel (swiping from left to right)")]
-            ClosingRightPanel,
-
-            [Description("Closing the left panel (swiping from right to left)")]
-            ClosingLeftPanel,
-        }
-
-        /// <summary>
-        /// Panels state. Are they opened or closed
-        /// </summary>
-        private enum PanelState
-        {
-            [Description("left and right Panels closed")]
-            Closed = 0, // valeur par défaut, ne pas modifier !
-
-            [Description("Right panel opened")]
-            RightPanelOpened,
-
-            [Description("Left panel opened")]
-            LeftPanelOpened
-        }
-        #endregion
-
         #region Properties
-        public bool IsClosed => _panelState == PanelState.Closed;
+        public bool IsClosed => PanelState == PanelState.Closed;
+
+        private SwipeAction _SwipeAction;
+
+        /// <summary>
+        /// Current swipe action
+        /// </summary>
+        public SwipeAction SwipeAction
+        {
+            get => _SwipeAction;
+            set
+            {
+                _SwipeAction = value;
+                SetPanelsVisibility(_SwipeAction);
+            }
+        }
+
+        /// <summary>
+        /// Current state of the panel
+        /// </summary>
+        public PanelState PanelState { get; set; }
+
         #endregion
 
         #region Fields
@@ -105,16 +124,6 @@ namespace SmoDev.Swipable
         /// Has user defined a right panel
         /// </summary>
         private bool _hasRightPanel => RightPanelView != null;
-
-        /// <summary>
-        /// Current swiping state
-        /// </summary>
-        private SwipeAction _swipeAction;
-
-        /// <summary>
-        /// Panels state
-        /// </summary>
-        private PanelState _panelState;
 
         /// <summary>
         ///  Indicates whether user is allowed to pan (for instance, disallowed is panel is self-closing or self-opening)
@@ -174,10 +183,7 @@ namespace SmoDev.Swipable
             {
                 _disablePanGesture = true;
 
-                await ValidateSwipeAsync(CenterPanel.TranslationX, SwipeValidationThreshold, SwipeOffset, _swipeAction);
-
-                _swipeAction = SwipeAction.NotSwiping;
-                IsSwipping = false;
+                await ValidateSwipeAsync(CenterPanel.TranslationX, SwipeValidationThreshold, SwipeOffset, SwipeAction);
 
                 if (ParentListView != null)
                 {
@@ -208,17 +214,22 @@ namespace SmoDev.Swipable
             if (Math.Abs(swipeX) < 0.005)
                 return;
 
-            IsSwipping = true;
+            SwipeAction = GetSwipeAction(CenterPanel.TranslationX, swipeX);
 
-            _swipeAction = GetSwipingState(CenterPanel.TranslationX, swipeX);
-
-            SetPanelsVisibility(_swipeAction);
-
-            if ((_hasLeftPanel && (_swipeAction == SwipeAction.ClosingLeftPanel || _swipeAction == SwipeAction.OpeningLeftPanel))
-                || (_hasRightPanel && (_swipeAction == SwipeAction.ClosingRightPanel || _swipeAction == SwipeAction.OpeningRightPanel)))
+            if (CanSwipePanel())
             {
                 CenterPanel.TranslationX = GetTranslationToApply(swipeX, SwipeOffset, _translationOriginX);
             }
+        }
+
+        /// <summary>
+        /// Calculate if panel can be swiped
+        /// </summary>
+        /// <returns></returns>
+        private bool CanSwipePanel()
+        {
+            return (_hasLeftPanel && (SwipeAction == SwipeAction.ClosingLeftPanel || SwipeAction == SwipeAction.OpeningLeftPanel))
+                            || (_hasRightPanel && (SwipeAction == SwipeAction.ClosingRightPanel || SwipeAction == SwipeAction.OpeningRightPanel));
         }
 
         public void OnSwipeStarted(View view)
@@ -242,8 +253,8 @@ namespace SmoDev.Swipable
         /// </summary>
         private void SetPanelsVisibility(SwipeAction swipeAction)
         {
-            RightPanel.IsVisible = _hasRightPanel && (swipeAction == SwipeAction.ClosingRightPanel || swipeAction == SwipeAction.OpeningRightPanel);
-            LeftPanel.IsVisible = _hasLeftPanel && (swipeAction == SwipeAction.ClosingLeftPanel || swipeAction == SwipeAction.OpeningLeftPanel);
+            RightPanel.IsVisible = _hasRightPanel && (swipeAction == SwipeAction.ClosingRightPanel || swipeAction == SwipeAction.OpeningRightPanel || PanelState == PanelState.RightPanelOpened);
+            LeftPanel.IsVisible = _hasLeftPanel && (swipeAction == SwipeAction.ClosingLeftPanel || swipeAction == SwipeAction.OpeningLeftPanel || PanelState == PanelState.LeftPanelOpened);
         }
         #endregion
 
@@ -268,8 +279,15 @@ namespace SmoDev.Swipable
         /// <summary>
         /// Get current swiping state
         /// </summary>
-        private SwipeAction GetSwipingState(double viewTranslation, double swipeX)
+        private SwipeAction GetSwipeAction(double viewTranslation, double swipeX)
         {
+            if (swipeX == 0)
+            {
+                IsSwipping = false;
+                return SwipeAction.NotSwiping;
+            }
+
+            IsSwipping = true;
             return Math.Sign(swipeX) > 0 ?
                 ((viewTranslation >= 0) ? SwipeAction.OpeningLeftPanel : SwipeAction.ClosingRightPanel) :
                 ((viewTranslation <= 0) ? SwipeAction.OpeningRightPanel : SwipeAction.ClosingLeftPanel);
@@ -317,9 +335,12 @@ namespace SmoDev.Swipable
 
             int sign = Math.Sign(panelTranslation);
             await CenterPanel.TranslateTo(sign * swipeOffset, 0);
-            _panelState = sign == 1 ? PanelState.LeftPanelOpened : PanelState.RightPanelOpened;
+            PanelState = sign == 1 ? PanelState.LeftPanelOpened : PanelState.RightPanelOpened;
 
             OnOpened(EventArgs.Empty);
+
+            SwipeAction = SwipeAction.NotSwiping;
+            IsSwipping = false;
         }
 
         /// <summary>
@@ -330,9 +351,12 @@ namespace SmoDev.Swipable
             OnClosing(EventArgs.Empty);
 
             await CenterPanel.TranslateTo(0, 0);
-            _panelState = PanelState.Closed;
+            PanelState = PanelState.Closed;
 
             OnClosed(EventArgs.Empty);
+
+            SwipeAction = SwipeAction.NotSwiping;
+            IsSwipping = false;
         }
         #endregion
 
