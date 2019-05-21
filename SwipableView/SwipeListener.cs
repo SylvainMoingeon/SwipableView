@@ -33,7 +33,7 @@ namespace SmoDev.Swipable
                     break;
 
                 case GestureStatus.Running:
-                    mISwipeCallback.OnSwiping(Content, e.TotalX);
+                    mISwipeCallback.OnSwiping(Content, e.TotalX, e.TotalY);
                     break;
 
                 case GestureStatus.Completed:

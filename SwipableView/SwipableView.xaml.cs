@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -173,7 +173,7 @@ namespace SmoDev.Swipable
         /// </summary>
         /// <param name="view">View on wich user is swiping</param>
         /// <param name="translatedX"></param>
-        public void OnSwiping(View view, double translatedX)
+        public void OnSwiping(View view, double translatedX, double translatedY)
         {
             if (_disablePanGesture)
                 return;
