@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -17,6 +17,22 @@ namespace SmoDev.Swipable
     {
         #region Constants
         private const double DOUBLE_COMPARAISON_EPSILON = 0.01;
+        #endregion
+
+        #region Events
+        public event EventHandler<EventArgs> Opening;
+
+        protected virtual void OnOpening(EventArgs e)
+        {
+            Opening?.Invoke(this, e);
+        }
+
+        public event EventHandler<EventArgs> Closing;
+
+        protected virtual void OnClosing(EventArgs e)
+        {
+            Closing?.Invoke(this, e);
+        }
         #endregion
 
         #region enums
@@ -64,6 +80,10 @@ namespace SmoDev.Swipable
             FromLeftToRight,
             FromRightToLeft
         }
+        #endregion
+
+        #region Properties
+        public bool IsClosed => _panelState == PanelState.Closed;
         #endregion
 
         #region Fields
@@ -117,6 +137,7 @@ namespace SmoDev.Swipable
             InitializeComponent();
 
             new SwipeListener(this, this);
+
             LayoutChanged += SwipableView_LayoutChanged;
 
             // Avoid bugs on iOS when swiping inside a scrollview. Set only once (static method)
@@ -294,6 +315,7 @@ namespace SmoDev.Swipable
         /// </summary>
         private async Task OpenPanel(double panelTranslation, double swipeOffset)
         {
+            OnOpening(EventArgs.Empty);
 
             int sign = Math.Sign(panelTranslation);
             await CenterPanel.TranslateTo(sign * swipeOffset, 0);
@@ -305,6 +327,8 @@ namespace SmoDev.Swipable
         /// </summary>
         public async Task ClosePanel()
         {
+            OnClosing(EventArgs.Empty);
+
             await CenterPanel.TranslateTo(0, 0);
             _panelState = PanelState.Closed;
         }
