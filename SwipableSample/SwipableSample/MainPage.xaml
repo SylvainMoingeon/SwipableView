@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:SwipableSample"
              xmlns:swipable="clr-namespace:SmoDev.Swipable;assembly=SmoDev.Swipable"
+             xmlns:behaviors="clr-namespace:SmoDev.Swipable.Behaviors;assembly=SmoDev.Swipable"
              >
     <ContentPage.Padding>
         <OnPlatform x:TypeArguments="Thickness"
@@ -152,6 +153,10 @@
                          Orientation="Vertical"
                          VerticalOptions="Fill"
                          >
+                <StackLayout.Behaviors>
+                    <behaviors:AutoCloseSwipableViewsBehavior />
+                </StackLayout.Behaviors>
+
                 <BindableLayout.ItemTemplate>
                     <DataTemplate>
                         <swipable:SwipableView SwipeOffset="250" SwipeValidationThreshold="50">
