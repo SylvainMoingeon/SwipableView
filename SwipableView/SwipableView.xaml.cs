@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
@@ -39,7 +36,7 @@ namespace SmoDev.Swipable
         /// <summary>
         /// Swiping State. Are panels opening or closing. Or not swiping.
         /// </summary>
-        private enum SwipingState
+        private enum SwipeAction
         {
             [Description("Not swiping")]
             NotSwiping = 0,
@@ -71,15 +68,6 @@ namespace SmoDev.Swipable
             [Description("Left panel opened")]
             LeftPanelOpened
         }
-
-        /// <summary>
-        /// Swipe direction
-        /// </summary>
-        private enum SwipeDirection
-        {
-            FromLeftToRight,
-            FromRightToLeft
-        }
         #endregion
 
         #region Properties
@@ -107,7 +95,7 @@ namespace SmoDev.Swipable
         /// <summary>
         /// Current swiping state
         /// </summary>
-        private SwipingState _swipingState;
+        private SwipeAction _swipeAction;
 
         /// <summary>
         /// Panels state
@@ -172,9 +160,9 @@ namespace SmoDev.Swipable
             {
                 _disablePanGesture = true;
 
-                await ValidateSwipeAsync(CenterPanel.TranslationX, SwipeValidationThreshold, SwipeOffset, _swipingState);
-                _swipingState = SwipingState.NotSwiping;
+                await ValidateSwipeAsync(CenterPanel.TranslationX, SwipeValidationThreshold, SwipeOffset, _swipeAction);
 
+                _swipeAction = SwipeAction.NotSwiping;
                 IsSwipping = false;
 
                 if (ParentListView != null)
@@ -195,26 +183,27 @@ namespace SmoDev.Swipable
         /// Swiping
         /// </summary>
         /// <param name="view">View on wich user is swiping</param>
-        /// <param name="translatedX"></param>
-        public void OnSwiping(View view, double translatedX, double translatedY)
+        /// <param name="swipeX">Amount of swipe on X axis</param>
+        /// <param name="swipeY">Amount of swipe on Y axis</param>
+        public void OnSwiping(View view, double swipeX, double swipeY)
         {
             if (_disablePanGesture)
                 return;
 
             // Avoids false positives
-            if (Math.Abs(translatedX) < 0.005)
+            if (Math.Abs(swipeX) < 0.005)
                 return;
 
             IsSwipping = true;
 
-            _swipingState = GetSwipingState(CenterPanel.TranslationX, translatedX);
+            _swipeAction = GetSwipingState(CenterPanel.TranslationX, swipeX);
 
-            SetPanelsVisibility(_swipingState);
+            SetPanelsVisibility(_swipeAction);
 
-            if ((_hasLeftPanel && (_swipingState == SwipingState.ClosingLeftPanel || _swipingState == SwipingState.OpeningLeftPanel))
-                || (_hasRightPanel && (_swipingState == SwipingState.ClosingRightPanel || _swipingState == SwipingState.OpeningRightPanel)))
+            if ((_hasLeftPanel && (_swipeAction == SwipeAction.ClosingLeftPanel || _swipeAction == SwipeAction.OpeningLeftPanel))
+                || (_hasRightPanel && (_swipeAction == SwipeAction.ClosingRightPanel || _swipeAction == SwipeAction.OpeningRightPanel)))
             {
-                CenterPanel.TranslationX = GetTranslationToApply(translatedX, SwipeOffset, _translationOriginX);
+                CenterPanel.TranslationX = GetTranslationToApply(swipeX, SwipeOffset, _translationOriginX);
             }
         }
 
@@ -237,10 +226,10 @@ namespace SmoDev.Swipable
         /// <summary>
         /// Show or hide left/right panels depending on swipe state
         /// </summary>
-        private void SetPanelsVisibility(SwipingState swipingState)
+        private void SetPanelsVisibility(SwipeAction swipeAction)
         {
-            RightPanel.IsVisible = _hasRightPanel && (swipingState == SwipingState.ClosingRightPanel || swipingState == SwipingState.OpeningRightPanel);
-            LeftPanel.IsVisible = _hasLeftPanel && (swipingState == SwipingState.ClosingLeftPanel || swipingState == SwipingState.OpeningLeftPanel);
+            RightPanel.IsVisible = _hasRightPanel && (swipeAction == SwipeAction.ClosingRightPanel || swipeAction == SwipeAction.OpeningRightPanel);
+            LeftPanel.IsVisible = _hasLeftPanel && (swipeAction == SwipeAction.ClosingLeftPanel || swipeAction == SwipeAction.OpeningLeftPanel);
         }
         #endregion
 
@@ -248,13 +237,14 @@ namespace SmoDev.Swipable
         /// <summary>
         /// Apply translation to the Center Panel
         /// </summary>
-        /// <param name="translatedX"></param>
-        /// <param name="swipeOffset">Maximum translation allowed.</param> 
-        /// <returns>Translation to apply to center panel, according to translatedX and maximum translation allowed</returns>
-        private double GetTranslationToApply(double translatedX, double swipeOffset, double translationOriginX)
+        /// <param name="swipeX">Amount of swipe on X axis</param>
+        /// <param name="swipeOffset">Maximum translation allowed.</param>
+        /// <param name="translationOriginX"></param> 
+        /// <returns>Translation to apply to center panel, according to amount of swipe and maximum translation allowed</returns>
+        private double GetTranslationToApply(double swipeX, double swipeOffset, double translationOriginX)
         {
-            double translationMax = Math.Sign(translatedX) * swipeOffset;
-            double translationToApply = translationOriginX + translatedX;
+            double translationMax = Math.Sign(swipeX) * swipeOffset;
+            double translationToApply = translationOriginX + swipeX;
 
             return (!_hasLeftPanel && translationToApply > 0) || (!_hasRightPanel && translationToApply < 0)
                 ? 0
@@ -264,19 +254,11 @@ namespace SmoDev.Swipable
         /// <summary>
         /// Get current swiping state
         /// </summary>
-        private SwipingState GetSwipingState(double viewTranslation, double translatedX)
+        private SwipeAction GetSwipingState(double viewTranslation, double swipeX)
         {
-            switch (Math.Sign(translatedX))
-            {
-                case 1:
-                    return (viewTranslation >= 0) ? SwipingState.OpeningLeftPanel : SwipingState.ClosingRightPanel;
-
-                case -1:
-                    return (viewTranslation <= 0) ? SwipingState.OpeningRightPanel : SwipingState.ClosingLeftPanel;
-
-                default:
-                    return SwipingState.NotSwiping;
-            }
+            return Math.Sign(swipeX) > 0 ?
+                ((viewTranslation >= 0) ? SwipeAction.OpeningLeftPanel : SwipeAction.ClosingRightPanel) :
+                ((viewTranslation <= 0) ? SwipeAction.OpeningRightPanel : SwipeAction.ClosingLeftPanel);
         }
         #endregion
 
@@ -284,22 +266,24 @@ namespace SmoDev.Swipable
         /// <summary>
         /// Indicates if panel translation has reached the validation threshold
         /// </summary>
-        /// <param name="translationX"></param>
+        /// <param name="panelTranslation">Current panel translation</param>
         /// <returns><see langword="true"/> if translationX has reached validation threshold. <see langword="false"/> otherwise</returns>
-        private bool HasReachValidationThreshold(double translationX, double validationThreshold)
+        private bool HasReachValidationThreshold(double panelTranslation, double validationThreshold)
         {
-            return Math.Abs(translationX) >= Math.Abs(validationThreshold);
+            return Math.Abs(panelTranslation) >= Math.Abs(validationThreshold);
         }
 
         /// <summary>
-        /// Activate or cancel swipe according to translation and activation threshold.        
+        /// Activate or cancel swipe according to panel translation and activation threshold.        
         /// </summary>
         /// <param name="panelTranslation">Panel translation</param>
         /// <param name="validationThreshold">Threshold from which swipe action is validated</param>
-        private async Task ValidateSwipeAsync(double panelTranslation, double validationThreshold, double swipeOffset, SwipingState swipingState)
+        /// <param name="swipeOffset">Amount of swipe allowed for the panel</param>
+        /// <param name="swipeAction">Current action of the swipe</param>
+        private async Task ValidateSwipeAsync(double panelTranslation, double validationThreshold, double swipeOffset, SwipeAction swipeAction)
         {
             // Cancel swipe => Closing panel
-            if (swipingState == SwipingState.ClosingLeftPanel || swipingState == SwipingState.ClosingRightPanel || !HasReachValidationThreshold(panelTranslation, validationThreshold))
+            if (swipeAction == SwipeAction.ClosingLeftPanel || swipeAction == SwipeAction.ClosingRightPanel || !HasReachValidationThreshold(panelTranslation, validationThreshold))
             {
                 await ClosePanel();
             }

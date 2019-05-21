@@ -23,7 +23,8 @@ namespace SmoDev.Swipable
         /// Swiping
         /// </summary>
         /// <param name="view">View on wich user is swiping</param>
-        /// <param name="translatedX"></param>
-        void OnSwiping(View view, double translatedX, double translatedY);
+        /// <param name="swipeX">Amount of swipe on X axis</param>
+        /// <param name="swipeY">Amount of swipe on Y axis</param>
+        void OnSwiping(View view, double swipeX, double swipeY);
     }
 }
