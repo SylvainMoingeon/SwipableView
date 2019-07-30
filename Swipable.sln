@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.421
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.452
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swipable", "SwipableView\Swipable.csproj", "{A504DFBA-41C5-4C4F-B03A-13651E69BD85}"
 EndProject
@@ -22,7 +22,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwipableSample.iOS", "Swipa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwipableSample.UWP", "SwipableSample\SwipableSample.UWP\SwipableSample.UWP.csproj", "{D8F9AC2C-6DBE-4A32-B64C-89E41963CCEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwipableSample", "SwipableSample\SwipableSample\SwipableSample.csproj", "{3E798F91-22FA-4F97-A034-8A89F09D84A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SwipableSample", "SwipableSample\SwipableSample\SwipableSample.csproj", "{3E798F91-22FA-4F97-A034-8A89F09D84A1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SwipableView", "SwipableView", "{00AE7145-3C9F-4865-853B-B88DB37E3E6D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -529,6 +531,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{A504DFBA-41C5-4C4F-B03A-13651E69BD85} = {00AE7145-3C9F-4865-853B-B88DB37E3E6D}
+		{86FA4504-8DA9-42D0-8D9B-94E06F4374B8} = {00AE7145-3C9F-4865-853B-B88DB37E3E6D}
+		{E71F3053-056C-4381-9638-048ED73BDFF6} = {00AE7145-3C9F-4865-853B-B88DB37E3E6D}
+		{12612F53-F772-41A7-89EA-2FB7A201BB86} = {00AE7145-3C9F-4865-853B-B88DB37E3E6D}
 		{ED632169-CD74-4D49-888A-9D73CC590658} = {851B1E8E-188D-4DF7-A064-02C400ADA7C3}
 		{F3507609-CA9A-4DEE-BF83-1173B6CB5645} = {851B1E8E-188D-4DF7-A064-02C400ADA7C3}
 		{D8F9AC2C-6DBE-4A32-B64C-89E41963CCEB} = {851B1E8E-188D-4DF7-A064-02C400ADA7C3}
