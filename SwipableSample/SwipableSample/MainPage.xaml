@@ -52,6 +52,8 @@
                                    HeightRequest="80"
                                    SwipeOffset="200"
                                    SwipeValidationThreshold="50"
+                                   OpenOnTap="True"
+                                   CloseOnTap="True"
                                    >
                 <swipable:SwipableView.LeftPanelView>
                     <Button Command="{Binding MessageCommand}"
@@ -90,6 +92,8 @@
                 <swipable:SwipableView HeightRequest="80"
                                        SwipeOffset="200"
                                        SwipeValidationThreshold="50"
+                                       OpenOnTap="True"
+                                       CloseOnTap="True"
                                        >
                     <swipable:SwipableView.RightPanelView>
                         <Button Command="{Binding MessageCommand}"
@@ -117,6 +121,8 @@
                 <swipable:SwipableView HeightRequest="80"
                                        SwipeOffset="200"
                                        SwipeValidationThreshold="50"
+                                       OpenOnTap="True"
+                                       CloseOnTap="True"
                                        >
                     <swipable:SwipableView.LeftPanelView>
                         <ImageButton Padding="10"

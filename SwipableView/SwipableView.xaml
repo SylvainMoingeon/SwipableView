@@ -7,6 +7,10 @@
           Margin="0"
           Padding="0"
           >
+        <Grid.GestureRecognizers>
+            <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="TapGestureRecognizer_Tapped" />
+        </Grid.GestureRecognizers>
+
         <ContentView x:Name="LeftPanel"
                      Padding="0"
                      BackgroundColor="Transparent"

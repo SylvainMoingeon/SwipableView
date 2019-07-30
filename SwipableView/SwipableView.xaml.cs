@@ -485,6 +485,73 @@ namespace SmoDev.Swipable
         }
         #endregion
 
+        #region OpenOnTap
+        // Bindable property
+        public static readonly BindableProperty OpenOnTapProperty =
+          BindableProperty.Create(
+             propertyName: nameof(OpenOnTap),
+             declaringType: typeof(SwipableView),
+             returnType: typeof(bool),
+             defaultValue: false,
+             defaultBindingMode: BindingMode.OneWay);
+
+        // Gets or sets value of this BindableProperty
+        public bool OpenOnTap
+        {
+            get => (bool)GetValue(OpenOnTapProperty);
+            set => SetValue(OpenOnTapProperty, value);
+        }
+        #endregion
+
+        #region CloseOnTap
+        // Bindable property
+        public static readonly BindableProperty CloseOnTapProperty =
+          BindableProperty.Create(
+             propertyName: nameof(CloseOnTap),
+             declaringType: typeof(SwipableView),
+             returnType: typeof(bool),
+             defaultValue: false,
+             defaultBindingMode: BindingMode.OneWay);
+
+        // Gets or sets value of this BindableProperty
+        public bool CloseOnTap
+        {
+            get => (bool)GetValue(CloseOnTapProperty);
+            set => SetValue(CloseOnTapProperty, value);
+        }
+        #endregion
+
+        #endregion
+
+        #region UI Interaction
+        private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            if (OpenOnTap && IsClosed)
+            {
+                var translation = 0d;
+                SwipeAction = SwipeAction.NotSwiping;
+
+                if (_hasLeftPanel && !_hasRightPanel)
+                {
+                    SwipeAction = SwipeAction.OpeningLeftPanel;
+                    translation = SwipeValidationThreshold;
+                }
+
+                if (_hasRightPanel && !_hasLeftPanel)
+                {
+                    SwipeAction = SwipeAction.OpeningRightPanel;
+                    translation = -SwipeValidationThreshold;
+                }
+
+                SetPanelsVisibility(SwipeAction);
+
+                await OpenPanel(translation, SwipeOffset);
+            }
+            else if (CloseOnTap && !IsClosed)
+            {
+                await ClosePanel();
+            }
+        }
         #endregion
     }
 }
