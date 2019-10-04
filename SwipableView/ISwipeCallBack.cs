@@ -26,5 +26,10 @@ namespace SmoDev.Swipable
         /// <param name="swipeX">Amount of swipe on X axis</param>
         /// <param name="swipeY">Amount of swipe on Y axis</param>
         void OnSwiping(View view, double swipeX, double swipeY);
+
+        /// <summary>
+        /// View is Tapped
+        /// </summary>
+        void OnTapped();
     }
 }

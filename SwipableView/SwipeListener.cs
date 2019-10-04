@@ -19,7 +19,20 @@ namespace SmoDev.Swipable
             var panGesture = new PanGestureRecognizer();
             panGesture.PanUpdated += OnPanUpdated;
 
+            var TapGesture = new TapGestureRecognizer
+            {
+                NumberOfTapsRequired = 1
+            };
+
+            TapGesture.Tapped += TapGesture_Tapped;
+
             view.GestureRecognizers.Add(panGesture);
+            view.GestureRecognizers.Add(TapGesture);
+        }
+
+        private void TapGesture_Tapped(object sender, EventArgs e)
+        {
+            mISwipeCallback.OnTapped();
         }
 
         private void OnPanUpdated(object sender, PanUpdatedEventArgs e)

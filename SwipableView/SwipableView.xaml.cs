@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -255,6 +255,38 @@ namespace SmoDev.Swipable
         {
             RightPanel.IsVisible = _hasRightPanel && (swipeAction == SwipeAction.ClosingRightPanel || swipeAction == SwipeAction.OpeningRightPanel || PanelState == PanelState.RightPanelOpened);
             LeftPanel.IsVisible = _hasLeftPanel && (swipeAction == SwipeAction.ClosingLeftPanel || swipeAction == SwipeAction.OpeningLeftPanel || PanelState == PanelState.LeftPanelOpened);
+        }
+
+        /// <summary>
+        /// Center panel is tapped
+        /// </summary>
+        public async void OnTapped()
+        {
+            if (OpenOnTap && IsClosed)
+            {
+                var translation = 0d;
+                SwipeAction = SwipeAction.NotSwiping;
+
+                if (_hasLeftPanel && !_hasRightPanel)
+                {
+                    SwipeAction = SwipeAction.OpeningLeftPanel;
+                    translation = SwipeValidationThreshold;
+                }
+
+                if (_hasRightPanel && !_hasLeftPanel)
+                {
+                    SwipeAction = SwipeAction.OpeningRightPanel;
+                    translation = -SwipeValidationThreshold;
+                }
+
+                SetPanelsVisibility(SwipeAction);
+
+                await OpenPanel(translation, SwipeOffset).ConfigureAwait(false);
+            }
+            else if (CloseOnTap && !IsClosed)
+            {
+                await ClosePanel().ConfigureAwait(false);
+            }
         }
         #endregion
 
@@ -521,37 +553,6 @@ namespace SmoDev.Swipable
         }
         #endregion
 
-        #endregion
-
-        #region UI Interaction
-        private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
-        {
-            if (OpenOnTap && IsClosed)
-            {
-                var translation = 0d;
-                SwipeAction = SwipeAction.NotSwiping;
-
-                if (_hasLeftPanel && !_hasRightPanel)
-                {
-                    SwipeAction = SwipeAction.OpeningLeftPanel;
-                    translation = SwipeValidationThreshold;
-                }
-
-                if (_hasRightPanel && !_hasLeftPanel)
-                {
-                    SwipeAction = SwipeAction.OpeningRightPanel;
-                    translation = -SwipeValidationThreshold;
-                }
-
-                SetPanelsVisibility(SwipeAction);
-
-                await OpenPanel(translation, SwipeOffset);
-            }
-            else if (CloseOnTap && !IsClosed)
-            {
-                await ClosePanel();
-            }
-        }
         #endregion
     }
 }
