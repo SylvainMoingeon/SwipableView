@@ -48,6 +48,9 @@ namespace SmoDev.Swipable
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SwipableView : ContentView, ISwipeCallBack
     {
+        // Keep last opened swipable view to close it while opening another swipable view without need of any other boilerplate or behavior
+        private static SwipableView _LastSwipableViewOpened;
+
         #region Constants
         private const double DOUBLE_COMPARAISON_EPSILON = 0.01;
         #endregion
@@ -222,6 +225,15 @@ namespace SmoDev.Swipable
             }
         }
 
+        private void CloseLastOpenedSwipableView()
+        {
+            if (_LastSwipableViewOpened == this)
+                return;
+
+            if (AutoCloseOtherSwipableViews)
+                _LastSwipableViewOpened?.ClosePanel();
+        }
+
         /// <summary>
         /// Calculate if panel can be swiped
         /// </summary>
@@ -363,6 +375,8 @@ namespace SmoDev.Swipable
         /// </summary>
         private async Task OpenPanel(double panelTranslation, double swipeOffset)
         {
+            CloseLastOpenedSwipableView();
+
             OnOpening(EventArgs.Empty);
 
             int sign = Math.Sign(panelTranslation);
@@ -370,6 +384,8 @@ namespace SmoDev.Swipable
             PanelState = sign == 1 ? PanelState.LeftPanelOpened : PanelState.RightPanelOpened;
 
             OnOpened(EventArgs.Empty);
+
+            _LastSwipableViewOpened = this;
 
             SwipeAction = SwipeAction.NotSwiping;
             IsSwipping = false;
@@ -550,6 +566,26 @@ namespace SmoDev.Swipable
         {
             get => (bool)GetValue(CloseOnTapProperty);
             set => SetValue(CloseOnTapProperty, value);
+        }
+        #endregion
+
+        #region AutoCloseOtherSwipableViews
+        // Bindable property
+        public static readonly BindableProperty AutoCloseOtherSwipableViewsProperty =
+          BindableProperty.Create(
+             propertyName: nameof(AutoCloseOtherSwipableViews),
+             declaringType: typeof(SwipableView),
+             returnType: typeof(bool),
+             defaultValue: true,
+             defaultBindingMode: BindingMode.TwoWay,
+             propertyChanged: (bindable, oldValue, newValue) =>
+             { });
+
+        // Gets or sets value of this BindableProperty
+        public bool AutoCloseOtherSwipableViews
+        {
+            get => (bool)GetValue(AutoCloseOtherSwipableViewsProperty);
+            set => SetValue(AutoCloseOtherSwipableViewsProperty, value);
         }
         #endregion
 
