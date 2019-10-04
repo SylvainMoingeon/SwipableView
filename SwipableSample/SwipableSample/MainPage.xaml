@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage x:Class="SwipableSample.MainPage"
              xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -48,12 +48,14 @@
             </Grid.RowDefinitions>
 
             <!--  LEFT AND RIGHT  -->
-            <swipable:SwipableView Grid.Row="0"
-                                   HeightRequest="80"
+            <StackLayout Grid.Row="0" Orientation="Vertical">
+                <Label HorizontalTextAlignment="Center"
+                       Text="Swipe Left and Right"
+                       FontAttributes="Bold"
+                       />
+                <swipable:SwipableView HeightRequest="80"
                                    SwipeOffset="200"
                                    SwipeValidationThreshold="50"
-                                   OpenOnTap="True"
-                                   CloseOnTap="True"
                                    >
                 <swipable:SwipableView.LeftPanelView>
                     <Button Command="{Binding MessageCommand}"
@@ -75,25 +77,27 @@
 
                 <swipable:SwipableView.CenterPanelView>
 
-                    <Label BackgroundColor="{StaticResource LightBackColor}"
-                           HorizontalOptions="FillAndExpand"
+                        <Label HorizontalOptions="FillAndExpand"
                            HorizontalTextAlignment="Center"
                            LineBreakMode="WordWrap"
                            Text="Populate panels as you want."
+                               BackgroundColor="{StaticResource LightBackColor}"
                            TextColor="{StaticResource DarkTextColor}"
                            VerticalTextAlignment="Center"
                            />
                 </swipable:SwipableView.CenterPanelView>
             </swipable:SwipableView>
+            </StackLayout>
 
             <!--  RIGHT ONLY  -->
             <StackLayout Grid.Row="1" Orientation="Vertical">
-                <Label HorizontalTextAlignment="Center" Text="Swipable View with right panel only" />
+                <Label HorizontalTextAlignment="Center"
+                       Text="Swipable View with right panel only"
+                       FontAttributes="Bold"
+                       />
                 <swipable:SwipableView HeightRequest="80"
                                        SwipeOffset="200"
                                        SwipeValidationThreshold="50"
-                                       OpenOnTap="True"
-                                       CloseOnTap="True"
                                        >
                     <swipable:SwipableView.RightPanelView>
                         <Button Command="{Binding MessageCommand}"
@@ -109,15 +113,56 @@
                                HorizontalOptions="FillAndExpand"
                                VerticalOptions="FillAndExpand"
                                >
-                            <Label HorizontalOptions="CenterAndExpand" Text="Right only" />
+                            <Label HorizontalOptions="CenterAndExpand"
+                                   Text="Swipe to the left"
+                                   BackgroundColor="{StaticResource LightBackColor}"
+                                   TextColor="{StaticResource DarkTextColor}"
+                                   />
+                        </Frame>
+                    </swipable:SwipableView.CenterPanelView>
+                </swipable:SwipableView>
+
+                <!--  LEFT ONLY  -->
+                <Label HorizontalTextAlignment="Center"
+                       Text="Swipable View with left panel only"
+                       FontAttributes="Bold"
+                       />
+                <swipable:SwipableView HeightRequest="80"
+                                       SwipeOffset="200"
+                                       SwipeValidationThreshold="50"
+                                       >
+                    <swipable:SwipableView.LeftPanelView>
+                        <ImageButton Padding="10"
+                                     BackgroundColor="Transparent"
+                                     Command="{Binding MessageCommand}"
+                                     CommandParameter="You are here !"
+                                     HeightRequest="20"
+                                     Source="ic_action_place.png"
+                                     WidthRequest="20"
+                                     />
+                    </swipable:SwipableView.LeftPanelView>
+
+                    <swipable:SwipableView.CenterPanelView>
+                        <Frame BackgroundColor="WhiteSmoke"
+                               HorizontalOptions="FillAndExpand"
+                               VerticalOptions="FillAndExpand"
+                               >
+                            <Label HorizontalOptions="CenterAndExpand"
+                                   Text="Swipe to the right"
+                                   BackgroundColor="{StaticResource LightBackColor}"
+                                   TextColor="{StaticResource DarkTextColor}"
+                                   />
                         </Frame>
                     </swipable:SwipableView.CenterPanelView>
                 </swipable:SwipableView>
             </StackLayout>
 
-            <!--  LEFT ONLY  -->
-            <StackLayout Grid.Row="2" Orientation="Vertical">
-                <Label HorizontalTextAlignment="Center" Text="Swipable View with left panel only" />
+            <!--  Close/Open on tap  -->
+            <StackLayout Grid.Row="2">
+                <Label HorizontalTextAlignment="Center"
+                       Text="Open or Close on tap"
+                       FontAttributes="Bold"
+                       />
                 <swipable:SwipableView HeightRequest="80"
                                        SwipeOffset="200"
                                        SwipeValidationThreshold="50"
@@ -140,10 +185,16 @@
                                HorizontalOptions="FillAndExpand"
                                VerticalOptions="FillAndExpand"
                                >
-                            <Label HorizontalOptions="CenterAndExpand" Text="Left only" />
+                            <Label HorizontalOptions="CenterAndExpand"
+                                   Text="Tap to open or close"
+                                   BackgroundColor="{StaticResource LightBackColor}"
+                                   TextColor="{StaticResource DarkTextColor}"
+                                   />
                         </Frame>
                     </swipable:SwipableView.CenterPanelView>
                 </swipable:SwipableView>
+
+
             </StackLayout>
 
             <!--  Bindable Layout  -->
