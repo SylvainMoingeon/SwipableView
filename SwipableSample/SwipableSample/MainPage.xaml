@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage x:Class="SwipableSample.MainPage"
              xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -54,39 +54,39 @@
                        FontAttributes="Bold"
                        />
                 <swipable:SwipableView HeightRequest="80"
-                                   SwipeOffset="200"
-                                   SwipeValidationThreshold="50"
-                                   >
-                <swipable:SwipableView.LeftPanelView>
-                    <Button Command="{Binding MessageCommand}"
-                            CommandParameter="Hello !"
-                            Text="A button (click !)"
-                            />
-                </swipable:SwipableView.LeftPanelView>
+                                       SwipeOffset="200"
+                                       SwipeValidationThreshold="50"
+                                       >
+                    <swipable:SwipableView.LeftPanelView>
+                        <Button Command="{Binding MessageCommand}"
+                                CommandParameter="Hello !"
+                                Text="A button (click !)"
+                                />
+                    </swipable:SwipableView.LeftPanelView>
 
-                <swipable:SwipableView.RightPanelView>
-                    <Label BackgroundColor="Black"
-                           HorizontalOptions="FillAndExpand"
-                           HorizontalTextAlignment="Center"
-                           Text="Just some text"
-                           TextColor="White"
-                           VerticalTextAlignment="Center"
-                           />
+                    <swipable:SwipableView.RightPanelView>
+                        <Label BackgroundColor="Black"
+                               HorizontalOptions="FillAndExpand"
+                               HorizontalTextAlignment="Center"
+                               Text="Just some text"
+                               TextColor="White"
+                               VerticalTextAlignment="Center"
+                               />
 
-                </swipable:SwipableView.RightPanelView>
+                    </swipable:SwipableView.RightPanelView>
 
-                <swipable:SwipableView.CenterPanelView>
+                    <swipable:SwipableView.CenterPanelView>
 
                         <Label HorizontalOptions="FillAndExpand"
-                           HorizontalTextAlignment="Center"
-                           LineBreakMode="WordWrap"
-                           Text="Populate panels as you want."
+                               HorizontalTextAlignment="Center"
+                               LineBreakMode="WordWrap"
+                               Text="Populate panels as you want."
                                BackgroundColor="{StaticResource LightBackColor}"
-                           TextColor="{StaticResource DarkTextColor}"
-                           VerticalTextAlignment="Center"
-                           />
-                </swipable:SwipableView.CenterPanelView>
-            </swipable:SwipableView>
+                               TextColor="{StaticResource DarkTextColor}"
+                               VerticalTextAlignment="Center"
+                               />
+                    </swipable:SwipableView.CenterPanelView>
+                </swipable:SwipableView>
             </StackLayout>
 
             <!--  RIGHT ONLY  -->
@@ -201,24 +201,23 @@
             <Label Grid.Row="3"
                    HorizontalTextAlignment="Center"
                    Text="Swipable view as ItemTemplate inside a Bindable StackLayout"
+                   FontAttributes="Bold"
                    />
 
-            <StackLayout x:Name="Listview"
-                         Grid.Row="4"
-                         BackgroundColor="Transparent"
-                         BindableLayout.ItemsSource="{Binding Budos}"
-                         Orientation="Vertical"
-                         VerticalOptions="Fill"
-                         >
-                <StackLayout.Behaviors>
-                    <behaviors:AutoCloseSwipableViewsBehavior />
-                </StackLayout.Behaviors>
-
-                <BindableLayout.ItemTemplate>
+            <CollectionView x:Name="Listview"
+                            Grid.Row="4"
+                            BackgroundColor="Transparent"
+                            ItemsSource="{Binding Budos}"
+                            VerticalOptions="Fill"
+                            >
+                <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <swipable:SwipableView SwipeOffset="250" SwipeValidationThreshold="50">
+                        <swipable:SwipableView SwipeOffset="250"
+                                               SwipeValidationThreshold="50"
+                                               OpenOnTap="True"
+                                               CloseOnTap="True"
+                                               >
                             <swipable:SwipableView.LeftPanelView>
-
                                 <Button Margin="5,0"
                                         Command="{Binding BindingContext.HelloCommand, Source={x:Reference LayoutRoot}}"
                                         CommandParameter="{Binding}"
@@ -270,8 +269,8 @@
                         </swipable:SwipableView>
 
                     </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </StackLayout>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </Grid>
     </ScrollView>
 </ContentPage>
