@@ -4,7 +4,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:SwipableSample"
              xmlns:swipable="clr-namespace:SmoDev.Swipable;assembly=SmoDev.Swipable"
-             xmlns:behaviors="clr-namespace:SmoDev.Swipable.Behaviors;assembly=SmoDev.Swipable"
              >
     <ContentPage.Padding>
         <OnPlatform x:TypeArguments="Thickness"
@@ -19,15 +18,18 @@
 
     <ContentPage.Resources>
         <Color x:Key="LightBackColor">WhiteSmoke</Color>
-        <Color x:Key="DarkTextColor">#494F50</Color>
-        <Color x:Key="DarkBackColor">#2F71B8</Color>
+        <Color x:Key="CenterPanelTextColor">WhiteSmoke</Color>
+        <Color x:Key="CenterPanelBackColor">SlateGray</Color>
         <Color x:Key="LightTextColor">#FFFFFF</Color>
         <Color x:Key="AlternateBackColor">#F08D4C</Color>
+        <Color x:Key="DarkTextColor">#494F50</Color>
+        <Color x:Key="DarkBackColor">#2F71B8</Color>
 
         <Style TargetType="Frame">
             <Setter Property="HorizontalOptions" Value="FillAndExpand" />
             <Setter Property="VerticalOptions" Value="FillAndExpand" />
             <Setter Property="HasShadow" Value="False" />
+            <Setter Property="CornerRadius" Value="0" />
         </Style>
 
         <Style TargetType="Button">
@@ -35,10 +37,15 @@
             <Setter Property="BackgroundColor" Value="{StaticResource DarkBackColor}" />
             <Setter Property="TextColor" Value="{StaticResource LightTextColor}" />
         </Style>
+
+        <Style TargetType="Label">
+            <Setter Property="TextColor" Value="Black" />
+            <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+        </Style>
     </ContentPage.Resources>
 
     <ScrollView Padding="0,10,0,0" VerticalOptions="FillAndExpand">
-        <Grid x:Name="LayoutRoot">
+        <Grid x:Name="LayoutRoot" VerticalOptions="FillAndExpand">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -53,7 +60,7 @@
                        Text="Swipe Left and Right"
                        FontAttributes="Bold"
                        />
-                <swipable:SwipableView HeightRequest="80"
+                <swipable:SwipableView HeightRequest="60"
                                        SwipeOffset="200"
                                        SwipeValidationThreshold="50"
                                        >
@@ -81,8 +88,8 @@
                                HorizontalTextAlignment="Center"
                                LineBreakMode="WordWrap"
                                Text="Populate panels as you want."
-                               BackgroundColor="{StaticResource LightBackColor}"
-                               TextColor="{StaticResource DarkTextColor}"
+                               TextColor="{StaticResource CenterPanelTextColor}"
+                               BackgroundColor="{StaticResource CenterPanelBackColor}"
                                VerticalTextAlignment="Center"
                                />
                     </swipable:SwipableView.CenterPanelView>
@@ -95,7 +102,7 @@
                        Text="Swipable View with right panel only"
                        FontAttributes="Bold"
                        />
-                <swipable:SwipableView HeightRequest="80"
+                <swipable:SwipableView HeightRequest="60"
                                        SwipeOffset="200"
                                        SwipeValidationThreshold="50"
                                        >
@@ -109,14 +116,13 @@
                     </swipable:SwipableView.RightPanelView>
 
                     <swipable:SwipableView.CenterPanelView>
-                        <Frame BackgroundColor="WhiteSmoke"
+                        <Frame BackgroundColor="{StaticResource CenterPanelBackColor}"
                                HorizontalOptions="FillAndExpand"
                                VerticalOptions="FillAndExpand"
                                >
                             <Label HorizontalOptions="CenterAndExpand"
                                    Text="Swipe to the left"
-                                   BackgroundColor="{StaticResource LightBackColor}"
-                                   TextColor="{StaticResource DarkTextColor}"
+                                   TextColor="{StaticResource CenterPanelTextColor}"
                                    />
                         </Frame>
                     </swipable:SwipableView.CenterPanelView>
@@ -127,7 +133,7 @@
                        Text="Swipable View with left panel only"
                        FontAttributes="Bold"
                        />
-                <swipable:SwipableView HeightRequest="80"
+                <swipable:SwipableView HeightRequest="60"
                                        SwipeOffset="200"
                                        SwipeValidationThreshold="50"
                                        >
@@ -143,14 +149,13 @@
                     </swipable:SwipableView.LeftPanelView>
 
                     <swipable:SwipableView.CenterPanelView>
-                        <Frame BackgroundColor="WhiteSmoke"
+                        <Frame BackgroundColor="{StaticResource CenterPanelBackColor}"
                                HorizontalOptions="FillAndExpand"
                                VerticalOptions="FillAndExpand"
                                >
                             <Label HorizontalOptions="CenterAndExpand"
                                    Text="Swipe to the right"
-                                   BackgroundColor="{StaticResource LightBackColor}"
-                                   TextColor="{StaticResource DarkTextColor}"
+                                   TextColor="{StaticResource CenterPanelTextColor}"
                                    />
                         </Frame>
                     </swipable:SwipableView.CenterPanelView>
@@ -163,7 +168,7 @@
                        Text="Open or Close on tap"
                        FontAttributes="Bold"
                        />
-                <swipable:SwipableView HeightRequest="80"
+                <swipable:SwipableView HeightRequest="60"
                                        SwipeOffset="200"
                                        SwipeValidationThreshold="50"
                                        OpenOnTap="True"
@@ -181,14 +186,13 @@
                     </swipable:SwipableView.LeftPanelView>
 
                     <swipable:SwipableView.CenterPanelView>
-                        <Frame BackgroundColor="WhiteSmoke"
+                        <Frame BackgroundColor="{StaticResource CenterPanelBackColor}"
                                HorizontalOptions="FillAndExpand"
                                VerticalOptions="FillAndExpand"
                                >
                             <Label HorizontalOptions="CenterAndExpand"
                                    Text="Tap to open or close"
-                                   BackgroundColor="{StaticResource LightBackColor}"
-                                   TextColor="{StaticResource DarkTextColor}"
+                                   TextColor="{StaticResource CenterPanelTextColor}"
                                    />
                         </Frame>
                     </swipable:SwipableView.CenterPanelView>
@@ -197,25 +201,26 @@
 
             </StackLayout>
 
-            <!--  Bindable Layout  -->
+            <!--  Collection  -->
             <Label Grid.Row="3"
                    HorizontalTextAlignment="Center"
-                   Text="Swipable view as ItemTemplate inside a Bindable StackLayout"
+                   Text="Swipable view as ItemTemplate of Collection"
                    FontAttributes="Bold"
                    />
 
-            <CollectionView x:Name="Listview"
-                            Grid.Row="4"
-                            BackgroundColor="Transparent"
-                            ItemsSource="{Binding Budos}"
-                            VerticalOptions="Fill"
-                            >
-                <CollectionView.ItemTemplate>
+            <StackLayout Grid.Row="4"
+                         Orientation="Vertical"
+                         BackgroundColor="Transparent"
+                         BindableLayout.ItemsSource="{Binding Budos}"
+                         Spacing="1"
+                         >
+                <BindableLayout.ItemTemplate>
                     <DataTemplate>
+
                         <swipable:SwipableView SwipeOffset="250"
                                                SwipeValidationThreshold="50"
-                                               OpenOnTap="True"
                                                CloseOnTap="True"
+                                               HeightRequest="60"
                                                >
                             <swipable:SwipableView.LeftPanelView>
                                 <Button Margin="5,0"
@@ -255,22 +260,22 @@
                             </swipable:SwipableView.RightPanelView>
 
                             <swipable:SwipableView.CenterPanelView>
-                                <Frame BackgroundColor="WhiteSmoke"
-                                       HeightRequest="40"
+                                <Frame BackgroundColor="{StaticResource CenterPanelBackColor}"
                                        HorizontalOptions="FillAndExpand"
                                        VerticalOptions="FillAndExpand"
                                        >
                                     <Label HorizontalOptions="CenterAndExpand"
+                                           VerticalOptions="Center"
                                            Text="{Binding}"
-                                           TextColor="Black"
+                                           TextColor="{StaticResource CenterPanelTextColor}"
                                            />
                                 </Frame>
                             </swipable:SwipableView.CenterPanelView>
                         </swipable:SwipableView>
 
                     </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
         </Grid>
     </ScrollView>
 </ContentPage>
