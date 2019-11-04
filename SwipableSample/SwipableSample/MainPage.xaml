@@ -223,22 +223,24 @@
                                                HeightRequest="60"
                                                >
                             <swipable:SwipableView.LeftPanelView>
-                                <Button Margin="5,0"
-                                        Command="{Binding BindingContext.HelloCommand, Source={x:Reference LayoutRoot}}"
-                                        CommandParameter="{Binding}"
-                                        Text="Hello"
-                                        />
+                                <Grid BackgroundColor="LightGray">
+                                    <Button Margin="2,0"
+                                            Command="{Binding BindingContext.HelloCommand, Source={x:Reference LayoutRoot}}"
+                                            CommandParameter="{Binding}"
+                                            Text="Hello"
+                                            />
+                                </Grid>
                             </swipable:SwipableView.LeftPanelView>
 
                             <swipable:SwipableView.RightPanelView>
-                                <Grid ColumnSpacing="0">
+                                <Grid ColumnSpacing="0" BackgroundColor="LightGray">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
 
                                     <Button Grid.Column="0"
-                                            Margin="5,0,0,0"
+                                            Margin="2,0,0,0"
                                             Command="{Binding BindingContext.HelloCommand, Source={x:Reference LayoutRoot}}"
                                             CommandParameter="{Binding}"
                                             Text="Hello"
@@ -247,7 +249,7 @@
                                             />
 
                                     <Button Grid.Column="1"
-                                            Margin="5,0,5,0"
+                                            Margin="2,0,2,0"
                                             BackgroundColor="{StaticResource AlternateBackColor}"
                                             TextColor="{StaticResource LightTextColor}"
                                             Command="{Binding BindingContext.HelloCommand, Source={x:Reference LayoutRoot}}"
