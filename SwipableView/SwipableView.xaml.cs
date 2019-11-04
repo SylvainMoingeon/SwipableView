@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
@@ -132,13 +133,28 @@ namespace SmoDev.Swipable
         ///  Indicates whether user is allowed to pan (for instance, disallowed is panel is self-closing or self-opening)
         /// </summary>
         private bool _disablePanGesture;
+
+        public bool DisallowSwipe { get; set; }
         #endregion
 
         #region Platform specific
+        private bool _isSwipping;
+
         /// <summary>
-        /// Android renderer need it to prevent scrollview from interfering with swipe
+        /// Platforms renderers need it to prevent scrollview from interfering with swipe
         /// </summary>
-        public bool IsSwipping { get; private set; }
+        public bool IsSwipping
+        {
+            get { return _isSwipping; }
+            private set
+            {
+                if (!IsSwipping.Equals(value))
+                {
+                    _isSwipping = value;
+                    OnPropertyChanged(nameof(IsSwipping));
+                }
+            }
+        }
 
         /// <summary>
         /// Ensure that specific ios configuration is set only once
@@ -210,7 +226,7 @@ namespace SmoDev.Swipable
         /// <param name="swipeY">Amount of swipe on Y axis</param>
         public void OnSwiping(View view, double swipeX, double swipeY)
         {
-            if (_disablePanGesture)
+            if (_disablePanGesture || DisallowSwipe)
                 return;
 
             // Avoids false positives
@@ -248,7 +264,7 @@ namespace SmoDev.Swipable
 
         public void OnSwipeStarted(View view)
         {
-            if (_disablePanGesture)
+            if (_disablePanGesture || DisallowSwipe)
                 return;
 
             _translationOriginX = CenterPanel.TranslationX;
