@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Foundation;
+using SmoDev.Swipable.iOS;
 using UIKit;
 using Xamarin.Forms;
 
@@ -24,6 +25,7 @@ namespace SwipableSample.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             Forms.SetFlags("CollectionView_Experimental");
+            SwipableViewRenderer.Initialize();
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
 
