@@ -214,8 +214,10 @@ namespace SmoDev.Swipable
                 return;
 
             // Avoids false positives
-            if (Math.Abs(swipeX) < 0.005)
+            if (Math.Abs(swipeX) < 10)
                 return;
+
+            IsSwipping = true;
 
             SwipeAction = GetSwipeAction(CenterPanel.TranslationX, swipeX);
 
@@ -325,14 +327,9 @@ namespace SmoDev.Swipable
         /// </summary>
         private SwipeAction GetSwipeAction(double viewTranslation, double swipeX)
         {
-            if (swipeX == 0)
-            {
-                IsSwipping = false;
-                return SwipeAction.NotSwiping;
-            }
-
-            IsSwipping = true;
-            return Math.Sign(swipeX) > 0 ?
+            return swipeX == 0
+                ? SwipeAction.NotSwiping
+                : Math.Sign(swipeX) > 0 ?
                 ((viewTranslation >= 0) ? SwipeAction.OpeningLeftPanel : SwipeAction.ClosingRightPanel) :
                 ((viewTranslation <= 0) ? SwipeAction.OpeningRightPanel : SwipeAction.ClosingLeftPanel);
         }
