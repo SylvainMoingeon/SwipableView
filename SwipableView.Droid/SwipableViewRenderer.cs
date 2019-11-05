@@ -12,7 +12,7 @@ namespace SmoDev.Swipable.Droid
 {
     public class SwipableViewRenderer : ViewRenderer<SwipableView, View>
     {
-        float _startX, _startY;
+        private float _startX, _startY;
 
         public SwipableViewRenderer(Context context) : base(context)
         {
